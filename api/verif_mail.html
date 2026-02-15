@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #f9fafb; }
+        .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 40px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 600; }
+        .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }
+        .content { background: white; padding: 30px 20px; }
+        .success-box { background: #ecfdf5; border: 2px solid #10b981; padding: 20px; border-radius: 6px; text-align: center; margin: 20px 0; }
+        .success-box h2 { margin: 0 0 10px 0; color: #10b981; font-size: 24px; }
+        .coupon-info { background: #f3f4f6; border-left: 4px solid #10b981; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        .coupon-cover { width: 100%; max-width: 500px; height: auto; margin: 10px 0; border-radius: 4px; }
+        .coupon-logo { max-width: 100px; height: auto; margin: 10px 0; }
+        .info-row { display: flex; margin: 12px 0; align-items: center; }
+        .info-label { font-weight: 600; min-width: 120px; color: #10b981; }
+        .info-value { flex: 1; }
+        .badge { display: inline-block; background: #dcfce7; color: #166534; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .footer { background: #f9fafb; padding: 20px; text-align: center; font-size: 14px; color: #666; }
+        .button { display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Vérification Approuvée!</h1>
+            <p>Votre coupon est maintenant validé</p>
+        </div>
+        
+        <div class="content">
+            <p>Bonjour Utilisateur,</p>
+            
+            <div class="success-box">
+                <h2>✓ Succès!</h2>
+                <p>Votre vérification de coupon a été approuvée avec succès.</p>
+            </div>
+            
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="https://livecards.net/_pl/be-itunes-gc-10-eur-70050.png" alt="iTunes Gift Cards" class="coupon-cover">
+            </div>
+            
+            
+            <div class="coupon-info">
+                <strong>Détails de Votre Coupon Validé</strong>
+                
+                <div style="text-align: center;">
+                    <img src="https://livecards.net/_pl/be-itunes-gc-10-eur-70050.png" alt="iTunes Gift Cards" class="coupon-logo">
+                </div>
+                
+                
+                <div class="info-row">
+                    <div class="info-label">Coupon:</div>
+                    <div class="info-value"><strong>iTunes Gift Card</strong></div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Référence:</div>
+                    <div class="info-value"><code>REF-1771030571-6b7d1</code></div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Montant Validé:</div>
+                    <div class="info-value"><strong>100.00 USD</strong></div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Approuvé le:</div>
+                    <div class="info-value">14/02/2026 à 00:57</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Statut:</div>
+                    <div class="info-value"><span class="badge">✓ Validé</span></div>
+                </div>
+            </div>
+            
+            <p>Vous pouvez maintenant consulter les détails complets de votre vérification approuvée dans votre dashboard.</p>
+            
+            <p style="text-align: center;">
+                <a href="http://localhost:4028/user-dashboard" class="button">Voir Mon Dashboard</a>
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p style="margin: 0;">© 2026 CouponVerify. Tous droits réservés.</p>
+        </div>
+    </div>
+</body>
+</html>

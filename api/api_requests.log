@@ -1,0 +1,8 @@
+--- 2026-02-10 21:52:49 ---
+POST /api/admin/auth/login
+Body: {"username":"admin","password":"admin123"}
+
+--- 2026-02-10 21:52:49 ---
+POST /api/admin/coupons
+Body: {"name":"Hulu","slug":"hulu","short_description":"Hulu streaming service","category":"streaming","supported_currencies":["USD"]}
+
