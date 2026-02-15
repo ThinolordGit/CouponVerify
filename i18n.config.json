@@ -1,0 +1,93 @@
+{
+  "i18n": {
+    "defaultLanguage": "en",
+    "supportedLanguages": {
+      "en": {
+        "name": "English",
+        "nativeName": "English",
+        "flag": "🇺🇸",
+        "direction": "ltr",
+        "locale": "en-US"
+      },
+      "fr": {
+        "name": "Français",
+        "nativeName": "Français",
+        "flag": "🇫🇷",
+        "direction": "ltr",
+        "locale": "fr-FR"
+      },
+      "es": {
+        "name": "Español",
+        "nativeName": "Español",
+        "flag": "🇪🇸",
+        "direction": "ltr",
+        "locale": "es-ES"
+      },
+      "de": {
+        "name": "Deutsch",
+        "nativeName": "Deutsch",
+        "flag": "🇩🇪",
+        "direction": "ltr",
+        "locale": "de-DE"
+      },
+      "it": {
+        "name": "Italiano",
+        "nativeName": "Italiano",
+        "flag": "🇮🇹",
+        "direction": "ltr",
+        "locale": "it-IT"
+      },
+      "pt": {
+        "name": "Português",
+        "nativeName": "Português",
+        "flag": "🇵🇹",
+        "direction": "ltr",
+        "locale": "pt-PT"
+      },
+      "ru": {
+        "name": "Русский",
+        "nativeName": "Русский",
+        "flag": "🇷🇺",
+        "direction": "ltr",
+        "locale": "ru-RU"
+      },
+      "ja": {
+        "name": "日本語",
+        "nativeName": "日本語",
+        "flag": "🇯🇵",
+        "direction": "ltr",
+        "locale": "ja-JP"
+      },
+      "zh": {
+        "name": "中文",
+        "nativeName": "简体中文",
+        "flag": "🇨🇳",
+        "direction": "ltr",
+        "locale": "zh-CN"
+      },
+      "ko": {
+        "name": "한국어",
+        "nativeName": "한국어",
+        "flag": "🇰🇷",
+        "direction": "ltr",
+        "locale": "ko-KR"
+      }
+    },
+    "storage": {
+      "key": "app_language",
+      "type": "localStorage"
+    },
+    "detection": {
+      "order": ["localStorage", "navigator", "htmlTag"],
+      "caches": ["localStorage"]
+    },
+    "backend": {
+      "endpoint": "/api/localization/get-translations",
+      "allowSaving": true
+    },
+    "fallbackLanguage": "en",
+    "debug": false,
+    "loadPath": "/locales/{{lng}}.json",
+    "savePath": "/api/localization/set-language"
+  }
+}
