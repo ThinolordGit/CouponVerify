@@ -1,14 +1,16 @@
 import React from 'react';
 import Icon from '../../../components/AppIcon';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../../context/I18nContext';
 
 const QuickActionCard = ({ title, description, icon, iconBg, link }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   return (
-    <Link
-      to={link}
-      className="bg-card border border-border rounded-lg p-3 sm:p-4 md:p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
+    <div
+      // to={link}
+      onClick={ () => { navigate(link); link?.includes("#") && setTimeout(() => { window.location.href = link }, 100); } }
+      className="bg-card cursor-pointer border border-border rounded-lg p-3 sm:p-4 md:p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
     >
       <div className="flex items-start gap-3 sm:gap-4">
         <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center flex-shrink-0 ${iconBg} group-hover:scale-110 transition-transform`}>
@@ -20,7 +22,7 @@ const QuickActionCard = ({ title, description, icon, iconBg, link }) => {
         </div>
         <Icon name="ChevronRight" size={16} className="sm:w-5 sm:h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all flex-shrink-0" />
       </div>
-    </Link>
+    </div>
   );
 };
 

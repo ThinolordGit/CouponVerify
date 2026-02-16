@@ -3,6 +3,7 @@ import Routes from "./Routes";
 import PushNotificationPrompt from "./components/PushNotificationPrompt";
 import ToastContainer from "./components/ui/ToastContainer";
 import { useToast } from "./context/ToastContext";
+import { useLocation } from "react-router-dom";
 import { initPushNotifications } from "./services/pushNotificationService";
 import settingsService from "./services/settingsService";
 
@@ -26,6 +27,26 @@ function App() {
               document.head.appendChild(faviconLink);
             }
           }
+          
+          if (seoSettings.site_description) {
+            const descriptionMeta = document.querySelector("meta[name='description']") || 
+                               document.createElement('meta');
+            descriptionMeta.name = 'description';
+            descriptionMeta.content = seoSettings.site_description;
+            if (!document.querySelector("meta[name='description']")) {
+              document.head.appendChild(descriptionMeta);
+            }
+          }
+          
+          if (seoSettings.site_keywords) {
+            const keywordsMeta = document.querySelector("meta[name='keywords']") || 
+                               document.createElement('meta');
+            keywordsMeta.name = 'keywords';
+            keywordsMeta.content = seoSettings.site_keywords;
+            if (!document.querySelector("meta[name='keywords']")) {
+              document.head.appendChild(keywordsMeta);
+            }
+          }
 
           // Apply site logo to localStorage for header component access
           if (seoSettings.site_logo_url) {
@@ -46,7 +67,7 @@ function App() {
               tempDiv.innerHTML = seoSettings.custom_head_html;
               
               // Append safe elements (meta, script, link tags) to head
-              const safeElements = tempDiv.querySelectorAll('meta, link[rel="stylesheet"], script');
+              const safeElements = tempDiv.querySelectorAll('meta, link, script');
               safeElements.forEach(element => {
                 const newElement = element.cloneNode(true);
                 document.head.appendChild(newElement);
@@ -67,9 +88,12 @@ function App() {
 
     applySiteSettings();
   }, []);
-
+  const location = useLocation();
+  
   useEffect(() => {
-    // Initialize push notifications on app mount
+    // Do NOT initialize push notifications on the admin-login page
+    
+    // Initialize push notifications (runs on mount and when route changes away from /admin-login)
     const initPush = async () => {
       try {
         const initialized = await initPushNotifications();
@@ -81,14 +105,14 @@ function App() {
         console.error('[App] Failed to initialize push notifications:', error);
       }
     };
-
+    
     initPush();
   }, []);
 
   return (
     <>
       <Routes />
-      <PushNotificationPrompt />
+      {location?.pathname && location.pathname.toLocaleLowerCase().trim() !== '/admin-login' && <PushNotificationPrompt />}
       <ToastContainer toasts={toasts} onClose={removeToast} />
     </>
   );

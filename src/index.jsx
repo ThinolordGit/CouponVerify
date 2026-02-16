@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { I18nProvider } from "./context/I18nContext";
 import { AdminProvider } from "./context/AdminContext";
 import { ToastProvider } from "./context/ToastContext";
+import { BrowserRouter } from 'react-router-dom';
 import App from "./App";
 import "./styles/tailwind.css";
 import "./styles/index.css";
@@ -14,7 +15,9 @@ root.render(
   <I18nProvider>
     <AdminProvider>
       <ToastProvider>
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </ToastProvider>
     </AdminProvider>
   </I18nProvider>

@@ -190,7 +190,7 @@ const AdminCouponCategories = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t("adminCategories.description")}</label>
                     <textarea
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -209,13 +209,13 @@ const AdminCouponCategories = () => {
                       }}
                       className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
                     >
-                      Cancel
+                      {t('common.cancel')}
                     </button>
                     <button
                       type="submit"
                       className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
                     >
-                      {editingCategory ? 'Update' : 'Create'}
+                      {editingCategory ? t('adminUsers.update') : t('adminUsers.create')}
                     </button>
                   </div>
                 </form>
@@ -243,14 +243,14 @@ const AdminCouponCategories = () => {
                       className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                     >
                       <Edit2 size={18} />
-                      Edit
+                      {t("common.edit")}
                     </button>
                     <button
                       onClick={() => setDeleteConfirm(category)}
                       className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition"
                     >
                       <Trash2 size={18} />
-                      Delete
+                      {t("common.delete")}
                     </button>
                   </div>
                 </div>

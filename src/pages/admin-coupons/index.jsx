@@ -118,13 +118,13 @@ const AdminCouponManagement = () => {
         <div className="bg-white border-b border-gray-200 p-6">
           <BreadcrumbNavigation items={breadcrumbs} />
           <div className="flex items-center justify-between mt-4">
-            <h1 className="text-3xl font-bold text-gray-900">{t('adminCoupons.title')}</h1>
+            <h1 className="text-xl md:text-3xl  font-bold text-gray-900">{t('adminCoupons.title')}</h1>
             <button
               onClick={() => {
                 setEditingCoupon(null);
                 setShowModal(true);
               }}
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium"
+              className="flex items-center text-sm gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium"
             >
               <Plus size={20} />
               {t('adminCoupons.addCoupon')}
@@ -149,13 +149,13 @@ const AdminCouponManagement = () => {
         {/* Content */}
         <div className="flex-1 overflow-auto p-6">
           {/* Filters & Search */}
-          <div className="mb-6 flex gap-4 items-center">
+          <div className="mb-6 flex flex-col gap-4 items-stretch md:flex-row md:items-center">
             {/* Search */}
-            <div className="flex-1 relative">
+            <div className="flex-1 relative w-full md:w-auto">
               <Search className="absolute left-3 top-3 text-gray-400" size={20} />
               <input
                 type="text"
-                placeholder={t('adminCoupons.search')}
+                placeholder={t('adminCoupons.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -163,36 +163,36 @@ const AdminCouponManagement = () => {
             </div>
 
             {/* Filter Buttons */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full md:w-auto">
               <button
                 onClick={() => setFilter('all')}
-                className={`px-4 py-2 rounded-lg font-medium transition ${
+                className={`w-full md:w-auto px-4 py-2 rounded-lg font-medium transition ${
                   filter === 'all'
                     ? 'bg-blue-600 text-white'
                     : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                {t('adminCoupons.filterAll')} ({coupons.length})
+                {t('adminCoupons.all')} ({coupons.length})
               </button>
               <button
                 onClick={() => setFilter('active')}
-                className={`px-4 py-2 rounded-lg font-medium transition ${
+                className={`w-full md:w-auto px-4 py-2 rounded-lg font-medium transition ${
                   filter === 'active'
                     ? 'bg-green-600 text-white'
                     : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                {t('adminCoupons.filterActive')}
+                {t('adminCoupons.active')} {/*({coupons.filter(coupon => coupon.is_active)?.length || 0})*/}
               </button>
               <button
                 onClick={() => setFilter('inactive')}
-                className={`px-4 py-2 rounded-lg font-medium transition ${
+                className={`w-full md:w-auto px-4 py-2 rounded-lg font-medium transition ${
                   filter === 'inactive'
                     ? 'bg-red-600 text-white'
                     : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                {t('adminCoupons.filterInactive')}
+                {t('adminCoupons.inactive')} {/*({coupons.filter(coupon => !coupon.is_active)?.length || 0})*/}
               </button>
             </div>
           </div>
@@ -203,7 +203,7 @@ const AdminCouponManagement = () => {
               <div className="text-gray-500">{t('common.loading')}</div>
             </div>
           ) : filteredCoupons.length > 0 ? (
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="bg-white rounded-lg shadow overflow-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b">
                   <tr>
@@ -274,7 +274,7 @@ const AdminCouponManagement = () => {
             </div>
           ) : (
             <div className="bg-white rounded-lg p-12 text-center">
-              <p className="text-gray-500 text-lg">{t('adminCoupons.noCoupons')}</p>
+              <p className="text-gray-500 text-lg">{t('adminCoupons.noFound')}</p>
             </div>
           )}
         </div>

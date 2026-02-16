@@ -1,5 +1,6 @@
 import api from './api';
 import { jwtHelper } from './jwtHelper';
+import refundService from './refundService';
 
 // Coupon Services
 export const couponService = {
@@ -55,7 +56,7 @@ export const adminAuthService = {
         if (response.data.data.user) {
           localStorage.setItem('auth_user', JSON.stringify(response.data.data.user));
         }
-
+        
         return { token, user: response.data.data.user };
       } else {
         console.error('[AUTH] Pas de token dans la réponse:', response.data);
@@ -80,6 +81,7 @@ export const adminAuthService = {
     } finally {
       // console.log('[AUTH] Clearing local auth');
       jwtHelper.removeToken();
+      // localStorage.clear()
     }
   },
 
@@ -169,6 +171,7 @@ export const adminDashboardService = {
 export default {
   couponService,
   verificationService,
+  refundService,
   adminAuthService,
   adminDashboardService,
 };

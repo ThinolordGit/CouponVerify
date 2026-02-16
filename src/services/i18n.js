@@ -5,15 +5,53 @@
 
 import en from '../locales/en.json';
 import fr from '../locales/fr.json';
-import de from '../locales/de.json';
 import es from '../locales/es.json';
+import de from '../locales/de.json';
+import pl from '../locales/pl.json';
+import it from '../locales/it.json';
+import pt from '../locales/pt.json';
+import hu from '../locales/hu.json';
+import nl from '../locales/nl.json';
+import tr from '../locales/tr.json';
+import el from '../locales/el.json';
+import sv from '../locales/sv.json';
+import ro from '../locales/ro.json';
+import cs from '../locales/cs.json';
+import da from '../locales/da.json';
+import fi from '../locales/fi.json';
+import no from '../locales/no.json';
+import bg from '../locales/bg.json';
+import zh from '../locales/zh.json';
+import ja from '../locales/ja.json';
+import ar from '../locales/ar.json';
+import ru from '../locales/ru.json';
+import ptBR from '../locales/pt-BR.json';
 
 // Available languages and their data
 const AVAILABLE_LANGUAGES = {
   en: { name: 'English', flag: '🇬🇧', data: en },
   fr: { name: 'Français', flag: '🇫🇷', data: fr },
-  de: { name: 'Deutsch', flag: '🇩🇪', data: de },
   es: { name: 'Español', flag: '🇪🇸', data: es },
+  de: { name: 'Deutsch', flag: '🇩🇪', data: de },
+  pl: { name: 'Polski', flag: '🇵🇱', data: pl },
+  it: { name: 'Italiano', flag: '🇮🇹', data: it },
+  pt: { name: 'Português', flag: '🇵🇹', data: pt },
+  hu: { name: 'Magyar', flag: '🇭🇺', data: hu },
+  nl: { name: 'Nederlands', flag: '🇳🇱', data: nl },
+  tr: { name: 'Türkçe', flag: '🇹🇷', data: tr },
+  el: { name: 'Ελληνικά', flag: '🇬🇷', data: el },
+  sv: { name: 'Svenska', flag: '🇸🇪', data: sv },
+  ro: { name: 'Română', flag: '🇷🇴', data: ro },
+  cs: { name: 'Čeština', flag: '🇨🇿', data: cs },
+  da: { name: 'Dansk', flag: '🇩🇰', data: da },
+  fi: { name: 'Suomi', flag: '🇫🇮', data: fi },
+  no: { name: 'Norsk', flag: '🇳🇴', data: no },
+  bg: { name: 'Български', flag: '🇧🇬', data: bg },
+  zh: { name: '中文 (简体)', flag: '🇨🇳', data: zh },
+  ja: { name: '日本語', flag: '🇯🇵', data: ja },
+  ar: { name: 'العربية', flag: '🇸🇦', data: ar },
+  ru: { name: 'Русский', flag: '🇷🇺', data: ru },
+  'pt-BR': { name: 'Português (Brasil)', flag: '🇧🇷', data: ptBR },
 };
 
 class I18nService {

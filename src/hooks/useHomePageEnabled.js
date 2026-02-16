@@ -11,11 +11,11 @@ export const useHomePageEnabled = () => {
   const [isEnabled, setIsEnabled] = useState(true); // Default true
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  
   useEffect(() => {
     fetchHomePageSetting();
   }, []);
-
+  
   const fetchHomePageSetting = async () => {
     try {
       setLoading(true);
@@ -26,17 +26,17 @@ export const useHomePageEnabled = () => {
         const response = await apiClient.get('/api/settings',{
             params: { 'action': 'features' }
         });
-        
-        if (response?.statusText === 'OK') {
+        // console.log(response?.statusText)
+        // if (response?.statusText === 'OK') {
           // Handle both response formats: { data: { features: {...} } } and { features: {...} }
-          const features = response?.data?.data?.features || data?.features;
+          const features = response?.data?.data?.features || response?.data?.features;
           const enabled = features?.enable_home_page === true || 
                          features?.enable_home_page === '1';
           setIsEnabled(enabled);
           // Update localStorage with latest value from API
           localStorage.setItem('enable_home_page', enabled ? '1' : '0');
           return;
-        }
+        // }
       } catch (apiError) {
         console.debug('Public features endpoint error, falling back to localStorage:', apiError.message);
       }

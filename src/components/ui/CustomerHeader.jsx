@@ -27,8 +27,9 @@ const CustomerHeader = () => {
   const allNavigationItems = [
     { label: t('common.home'), path: '/homepage' },
     { label: t('homepage.startVerifying'), path: '/coupon-verification' },
+    { label: t('navigation.refunds'), path: '/refunds' }
   ];
-
+  
   // Filter out home item if homepage is disabled AND user is not admin
   // Admins always see the home link
   const navigationItems = (isHomePageEnabled || adminAccess) 

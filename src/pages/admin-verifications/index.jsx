@@ -4,6 +4,7 @@ import AdminSidebar from '../../components/ui/AdminSidebar';
 import BreadcrumbNavigation from '../../components/ui/BreadcrumbNavigation';
 import { Search, Link as LinkIcon, CheckCircle, X, Ban, Eye, EyeOff } from 'lucide-react';
 import verificationService from '../../services/verificationService';
+import AdminTable from '../../components/ui/AdminTable';
 import { useTranslation } from '../../context/I18nContext';
 
 const AdminVerifications = () => {
@@ -53,7 +54,7 @@ const AdminVerifications = () => {
     };
     return map[status] || status;
   };
-
+  
   // Reverse map for filtering
   const reverseMapStatus = (displayStatus) => {
     const map = {
@@ -128,7 +129,7 @@ const AdminVerifications = () => {
     setModalAction('approve');
     setShowActionModal(true);
   };
-
+  
   // Handle reject action
   const handleRejectClick = (id) => {
     setSelectedVerification(allVerifications.find(v => v.id === id));
@@ -289,128 +290,127 @@ const AdminVerifications = () => {
               </button>
             </div>
           </div>
-
+          
           {/* Verifications Table */}
           {loading ? (
             <div className="bg-white rounded-lg p-12 text-center">
               <p className="text-gray-600">{t('adminVerifications.loadingVerifications')}</p>
             </div>
           ) : filteredVerifications.length > 0 ? (
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              {/* Horizontal scroll wrapper */}
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-max">
-                  <thead className="bg-gray-50 border-b sticky top-0 z-10">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 whitespace-nowrap">{t('common.coupon')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 whitespace-nowrap">{t('common.code')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 whitespace-nowrap">{t('common.email')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 whitespace-nowrap">{t('common.amount')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 whitespace-nowrap">{t('common.reference')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 whitespace-nowrap">{t('common.status')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 whitespace-nowrap">{t('common.date')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 whitespace-nowrap">{t('common.actions')}</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {filteredVerifications.map(verification => (
-                    <tr key={verification.id} className="hover:bg-gray-50 transition border-b">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          {verification.couponLogo && (
-                            <img 
-                              src={verification.couponLogo}
-                              alt={verification.couponType}
-                              className="w-8 h-8 rounded object-cover"
-                              onError={(e) => { e.target.style.display = 'none'; }}
-                            />
-                          )}
-                          <span className="font-medium text-gray-900 min-w-max">{verification.couponType}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
-                            {visibleCodes[verification.id] ? (
-                              verification.code || '••••'
-                            ) : (
-                              '••••••••'
-                            )}
-                          </span>
-                          <button
-                            onClick={() => toggleCodeVisibility(verification.id)}
-                            className="p-1 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition"
-                            title={visibleCodes[verification.id] ? 'Hide code' : 'Show code'}
-                          >
-                            {visibleCodes[verification.id] ? (
-                              <Eye size={16} />
-                            ) : (
-                              <EyeOff size={16} />
-                            )}
-                          </button>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-gray-600">
-                        <a href={`mailto:${verification.email}`} className="hover:text-blue-600 underline text-sm">
-                          {verification.email}
-                        </a>
-                      </td>
-                      <td className="px-4 py-3 text-gray-600 text-sm">
-                        {parseFloat(verification.amount).toFixed(2)} {verification.currency}
-                      </td>
-                      <td className="px-4 py-3 text-xs text-gray-600 font-mono">
-                        {verification.reference}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
-                          verification.statusValue === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                          verification.statusValue === 'valid' ? 'bg-green-100 text-green-800' :
-                          verification.statusValue === 'invalid' ? 'bg-red-100 text-red-800' :
-                          verification.statusValue === 'blocked' ? 'bg-red-200 text-red-900' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {verification.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-xs text-gray-600 whitespace-nowrap">
-                        {new Date(verification.date).toLocaleDateString('en-US')}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        {verification.statusValue === 'pending' && (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleApproveClick(verification.id)}
-                              disabled={actionLoading}
-                              className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition disabled:opacity-50"
-                              title={t('adminVerifications.approve')}
-                            >
-                              <CheckCircle size={18} />
-                            </button>
-                            <button
-                              onClick={() => handleRejectClick(verification.id)}
-                              disabled={actionLoading}
-                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
-                              title={t('adminVerifications.reject')}
-                            >
-                              <X size={18} />
-                            </button>
-                            <button
-                              onClick={() => handleBlockClick(verification.id)}
-                              disabled={actionLoading}
-                              className="p-2 text-red-900 hover:bg-red-100 rounded-lg transition disabled:opacity-50"
-                              title={t('adminVerifications.block')}
-                            >
-                              <Ban size={18} />
-                            </button>
-                          </div>
+            <AdminTable
+              columns={[
+                { label: t('common.coupon') },
+                { label: t('common.code') },
+                { label: t('common.email') },
+                { label: t('common.amount') },
+                { label: t('common.reference') },
+                { label: t('common.status') },
+                { label: t('common.date') },
+                { label: t('common.actions') }
+              ]}
+            >
+              {filteredVerifications.map(verification => (
+                <tr key={verification.id} className="hover:bg-gray-50 transition border-b">
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      {verification.couponLogo && (
+                        <img 
+                          src={verification.couponLogo}
+                          alt={verification.couponType}
+                          className="w-8 h-8 rounded object-cover"
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                      )}
+                      <span className="font-medium text-gray-900 min-w-max">{verification.couponType}</span>
+                    </div>
+                  </td>
+
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
+                        {visibleCodes[verification.id] ? (
+                          verification.code || '••••'
+                        ) : (
+                          '••••••••'
                         )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              </div>
-            </div>
+                      </span>
+                      <button
+                        onClick={() => toggleCodeVisibility(verification.id)}
+                        className="p-1 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition"
+                        title={visibleCodes[verification.id] ? 'Hide code' : 'Show code'}
+                      >
+                        {visibleCodes[verification.id] ? (
+                          <Eye size={16} />
+                        ) : (
+                          <EyeOff size={16} />
+                        )}
+                      </button>
+                    </div>
+                  </td>
+
+                  <td className="px-4 py-3 text-gray-600">
+                    <a href={`mailto:${verification.email}`} className="hover:text-blue-600 underline text-sm">
+                      {verification.email}
+                    </a>
+                  </td>
+
+                  <td className="px-4 py-3 text-gray-600 text-sm">
+                    {parseFloat(verification.amount).toFixed(2)} {verification.currency}
+                  </td>
+
+                  <td className="px-4 py-3 text-xs text-gray-600 font-mono">
+                    {verification.reference}
+                  </td>
+
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                      verification.statusValue === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                      verification.statusValue === 'valid' ? 'bg-green-100 text-green-800' :
+                      verification.statusValue === 'invalid' ? 'bg-red-100 text-red-800' :
+                      verification.statusValue === 'blocked' ? 'bg-red-200 text-red-900' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {verification.status}
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-3 text-xs text-gray-600 whitespace-nowrap">
+                    {new Date(verification.date).toLocaleDateString('en-US')}
+                  </td>
+
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {verification.statusValue === 'pending' && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleApproveClick(verification.id)}
+                          disabled={actionLoading}
+                          className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition disabled:opacity-50"
+                          title={t('adminVerifications.approve')}
+                        >
+                          <CheckCircle size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleRejectClick(verification.id)}
+                          disabled={actionLoading}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
+                          title={t('adminVerifications.reject')}
+                        >
+                          <X size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleBlockClick(verification.id)}
+                          disabled={actionLoading}
+                          className="p-2 text-red-900 hover:bg-red-100 rounded-lg transition disabled:opacity-50"
+                          title={t('adminVerifications.block')}
+                        >
+                          <Ban size={18} />
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </AdminTable>
           ) : (
             <div className="bg-white rounded-lg p-12 text-center">
               <p className="text-gray-600">{t('adminVerifications.noVerifications')}</p>

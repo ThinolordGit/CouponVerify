@@ -27,11 +27,16 @@ const HomePageRoute = () => {
   // If disabled and not admin, redirect will happen above
   // If enabled or admin, show homepage
   if (loading) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white text-gray-400">
+        <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   if (!isEnabled && !adminAccess) {
-    return null;
+    // Falls back to verification if homepage is disabled
+    return null; // The redirect in useEffect handles this
   }
 
   return <Homepage />;

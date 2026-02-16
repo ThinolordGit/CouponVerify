@@ -3,7 +3,7 @@ import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 import { useTranslation } from '../../../context/I18nContext';
 
-const RecentVerificationCard = ({ verification, coupons=[], onApprove, onReject, onViewDetails }) => {
+const RecentVerificationCard = ({ verification, coupons=[], onApprove, onReject, onViewDetails, isSuperAdmin=true }) => {
   const { t } = useTranslation();
   // Map backend status values to display status
   const statusMap = {
@@ -71,8 +71,8 @@ const RecentVerificationCard = ({ verification, coupons=[], onApprove, onReject,
             <p className="text-xs sm:text-sm text-muted-foreground truncate">{verification?.email}</p>
           </div>
         </div>
-
-        <div className="flex flex-col xs:flex-row xs:items-center gap-2 sm:gap-3 lg:gap-4">
+        
+        <div className={`flex flex-col ${isSuperAdmin ? "" : "lg:flex-row xl:flex-row xl:items-center lg:items-center"} xs:flex-row xs:items-center gap-2 sm:gap-3 lg:gap-4`}>
           <div className="flex items-center gap-2">
             <span className="text-xs sm:text-sm font-medium text-foreground whitespace-nowrap">{verification?.amount} {verification?.currency}</span>
           </div>

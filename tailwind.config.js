@@ -5,6 +5,26 @@ module.exports = {
     './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
+    screens: {
+      // Breakpoints standards
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+
+      // Intermédiaires entre les principaux
+      'sm-md': '700px',   // entre sm et md
+      'md-lg': '880px',   // entre md et lg
+      'lg-xl': '1152px',  // entre lg et xl
+      'xl-2xl': '1408px', // entre xl et 2xl
+
+      // Options personnalisées supplémentaires si tu veux affiner encore
+      'sm-mid': '720px',
+      'md-mid': '896px',
+      'lg-mid': '1120px',
+      'xl-mid': '1440px',
+    },
     extend: {
       colors: {
         border: 'var(--color-border)', // slate-200

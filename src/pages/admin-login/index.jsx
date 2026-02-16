@@ -69,16 +69,25 @@ const AdminLogin = () => {
 
       // console.log('[LOGIN] Login result:', result);
       // console.log('[LOGIN] localStorage after login:', localStorage.getItem('auth_user'));
+      
+      if (result?.token) {
+        // console.log('[LOGIN] Login successful, token received');
+        // Login successful, user data is now in localStorage
+        setSuccess(t('adminLogin.loginSuccess'));
 
-      // Login successful, user data is now in localStorage
-      setSuccess(t('adminLogin.loginSuccess'));
-
-      // Redirect to dashboard immediately
-      // localStorage is already set, so PrivateRoute will see it
-      setTimeout(() => {
-        // console.log('[LOGIN] Redirecting to dashboard, localStorage:', localStorage.getItem('auth_user'));
-        navigate('/admin-dashboard', { replace: true });
-      }, 300);
+        // Redirect to dashboard immediately
+        // localStorage is already set, so PrivateRoute will see it
+        setTimeout(() => {
+          // console.log('[LOGIN] Redirecting to dashboard, localStorage:', localStorage.getItem('auth_user'));
+          // navigate('/admin-dashboard', { replace: true });
+          setTimeout( () => { window.location.href = '/admin-dashboard'; }, 200 )
+        }, 300);
+      } else {
+        setError(t('adminLogin.loginError'));
+        setLoading(false);
+        return;
+      }
+      
 
     } catch (err) {
       console.error('Login error:', err);

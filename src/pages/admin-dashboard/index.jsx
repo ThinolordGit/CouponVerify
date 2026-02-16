@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { adminAuthService } from '../../services/apiServices';
 import couponService from '../../services/couponService';
 import verificationService from '../../services/verificationService';
+import refundService from '../../services/refundService';
 import AdminSidebar from '../../components/ui/AdminSidebar';
 import BreadcrumbNavigation from '../../components/ui/BreadcrumbNavigation';
 import StatCard from './components/StatCard';
@@ -16,6 +17,7 @@ import CouponCatalog from '../homepage/components/CouponCatalog';
 import Icon from '../../components/AppIcon';
 import { useTranslation } from '../../context/I18nContext';
 import categoryService from '../../services/categoryService';
+import { useAdmin } from 'context/AdminContext';
 
 const AdminDashboard = () => {
   const { t } = useTranslation();
@@ -28,9 +30,11 @@ const AdminDashboard = () => {
   const [couponDistributionData, setCouponDistributionData] = useState([]);
   const [recentVerificationsData, setRecentVerificationsData] = useState([]);
   const [activities, setActivities] = useState([]);
+  const [refunds, setRefunds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedVerification, setSelectedVerification] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const { isLoading, isAuthenticated, isSuperAdmin, admin } = useAdmin();
 
   
   const transformCoupon = (c) => ({
@@ -149,6 +153,16 @@ const AdminDashboard = () => {
       const verificationsRes = await verificationService.getAllVerifications();
       const verificationsList = verificationsRes?.data?.verifications || getFallbackVerifications();
       setVerifications(verificationsList);
+
+      // Load pending refunds (for dashboard counters)
+      try {
+        const refundsRes = await refundService.getPendingRefunds();
+        const pendingRefunds = refundsRes?.data?.refunds || [];
+        setRefunds(pendingRefunds);
+      } catch (err) {
+        console.warn('Failed to load refunds for dashboard:', err);
+        setRefunds([]);
+      }
 
       // Generate coupon distribution
       const distribution = generateCouponDistribution(couponsList);
@@ -349,6 +363,9 @@ const AdminDashboard = () => {
       return 'neutral';
     };
 
+    // Refunds stat (pending)
+    const pendingRefundsCount = refunds?.length || 0;
+
     // Generate trend data from last 7 days
     const last7DaysTrend = [];
     for (let i = 6; i >= 0; i--) {
@@ -431,13 +448,13 @@ const AdminDashboard = () => {
 
   // Quick actions (static but with dynamic link to pending)
   const pendingCount = verifications.filter(v => v.status === 'pending').length;
-  const quickActions = [
+  let  quickActions = [
   {
     title: t('adminDashboard.manageCoupons'),
     description: t('adminDashboard.manageCouponsDesc'),
     icon: "Ticket",
     iconBg: "bg-gradient-to-br from-blue-500 to-blue-600",
-    link: "/admin-dashboard/coupons"
+    link: isSuperAdmin ? "/admin-dashboard/coupons" : "/admin-dashboard/#coupons"
   },
   {
     title: t('adminDashboard.pendingVerifications'),
@@ -445,21 +462,26 @@ const AdminDashboard = () => {
     icon: "Clock",
     iconBg: "bg-gradient-to-br from-amber-500 to-amber-600",
     link: "/admin-dashboard/verifications/pending"
-  },
-  {
-    title: t('navigation.emailConfig'),
-    description: t('adminDashboard.manageTemplatesSMTP'),
-    icon: "Mail",
-    iconBg: "bg-gradient-to-br from-emerald-500 to-emerald-600",
-    link: "/admin-dashboard/email-config"
-  },
-  {
-    title: t('adminDashboard.siteSettings'),
-    description: t('adminDashboard.customizeAppearance'),
-    icon: "Settings",
-    iconBg: "bg-gradient-to-br from-purple-500 to-purple-600",
-    link: "/admin-dashboard/settings"
   }];
+  const adminQuickActions = [
+    {
+      title: t('navigation.emailConfig'),
+      description: t('adminDashboard.manageTemplatesSMTP'),
+      icon: "Mail",
+      iconBg: "bg-gradient-to-br from-emerald-500 to-emerald-600",
+      link: "/admin-dashboard/email-config"
+    },
+    {
+      title: t('adminDashboard.siteSettings'),
+      description: t('adminDashboard.customizeAppearance'),
+      icon: "Settings",
+      iconBg: "bg-gradient-to-br from-purple-500 to-purple-600",
+      link: "/admin-dashboard/settings"
+    }
+  ];
+  if (isSuperAdmin) {
+    adminQuickActions.forEach(action => quickActions.push(action));
+  }
 
   
   // Mock activity feed
@@ -600,12 +622,12 @@ const AdminDashboard = () => {
           </div>
 
           {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+          {isSuperAdmin && <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
             {stats?.map((stat, index) =>
             <StatCard key={index} {...stat} />
             )}
-          </div>
-
+          </div>}
+          
           {/* Charts Section */}
           {false && <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
             <div className="lg:col-span-2">
@@ -627,16 +649,16 @@ const AdminDashboard = () => {
             <h2 className="text-xl md:text-2xl font-heading font-semibold text-foreground mb-4">
               {t('adminDashboard.quickActions')}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${isSuperAdmin ? 'xl:grid-cols-4' : 'xl:grid-cols-2'} gap-4`}>
               {quickActions?.map((action, index) =>
               <QuickActionCard key={index} {...action} />
               )}
             </div>
           </div>
-
+          
           {/* Recent Verifications and Activity Feed */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-            <div className="lg:col-span-2">
+          <div className={`grid grid-cols-1 lg:grid-cols-1 lg-xl:grid-cols-3  ${isSuperAdmin ? '' : 'xl:grid-cols-3'} gap-4 md:gap-6`}>
+            <div className={`${isSuperAdmin ? 'lg:col-span-2 xl:col-span-2' : 'lg:col-span-3 xl:col-span-3'}`}>
               <div className="bg-card border border-border rounded-lg p-4 md:p-6">
                 <div className="flex items-center justify-between mb-4 md:mb-6">
                   <h2 className="text-xl md:text-2xl font-heading font-semibold text-foreground">
@@ -659,6 +681,7 @@ const AdminDashboard = () => {
                       verification={verification}
                       onApprove={handleApprove}
                       onReject={handleReject}
+                      isSuperAdmin={isSuperAdmin}
                       onViewDetails={handleViewDetails} />
                     )
                   ) : (
@@ -668,12 +691,12 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div>
+            {isSuperAdmin && <div>
               <ActivityFeed
                 activities={activities}
                 title={t('adminDashboard.recentActivityTitle')} />
               
-            </div>
+            </div>}
           </div>
 
           {/* Coupons Catalog Section */}
@@ -681,7 +704,7 @@ const AdminDashboard = () => {
             <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-6">
               {t('homepage.supportedCoupons')}
             </h2>
-            <CouponCatalog coupons={coupons} categories={categories} variant="admin" />
+            <CouponCatalog coupons={coupons} categories={categories} variant="admin" isCollapsed={sidebarCollapsed} />
           </div>
         </div>
       </div>

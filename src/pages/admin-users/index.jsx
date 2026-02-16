@@ -63,7 +63,7 @@ const AdminUsersManagement = () => {
       formDt = { ...formData, username: formData.email?.trim() };
       setFormData(formDt)
     }
-    if (!formData.password_hash.trim() && !editingUser) {
+    if (!editingUser && !formData.password_hash.trim() ) {
       setError(t('adminUsers.errorPassword'));
     }
     try {
@@ -155,7 +155,7 @@ const AdminUsersManagement = () => {
               className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium"
             >
               <Plus size={20} />
-              {t('adminUsers.addNewUser')}
+              {t('adminUsers.addUser')}
             </button>
           </div>
         </div>
@@ -234,6 +234,7 @@ const AdminUsersManagement = () => {
                 <thead className="bg-gray-50 border-b">
                   <tr>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">{t('adminUsers.columnName')}</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">{t('adminUsers.columnUsername')}</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">{t('adminUsers.columnEmail')}</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">{t('adminUsers.columnRole')}</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">{t('adminUsers.columnJoined')}</th>
@@ -244,6 +245,7 @@ const AdminUsersManagement = () => {
                   {filteredUsers.map(user => (
                     <tr key={user.id} className="hover:bg-gray-50 transition">
                       <td className="px-6 py-4 font-medium text-gray-900">{user.full_name}</td>
+                      <td className="px-6 py-4 text-gray-600">{user.username}</td>
                       <td className="px-6 py-4 text-gray-600">{user.email}</td>
                       <td className="px-6 py-4">
                         <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${

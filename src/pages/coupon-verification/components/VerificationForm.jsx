@@ -16,15 +16,19 @@ const VerificationForm = ({ coupon, couponType, onSubmit }) => {
     email: ''
   });
 
-  const [showCode, setShowCode] = useState(false);
+  // show code by default (user requested default type=text for both forms)
+  const [showCode, setShowCode] = useState(true);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const currencyOptions = [
-    { value: 'EUR', label: t('couponVerification.eurCurrency') },
-    { value: 'USD', label: t('couponVerification.usdCurrency') },
-    { value: 'GBP', label: t('couponVerification.gbpCurrency') }
-  ];
+  // Use coupon.supported_currencies when available, otherwise fall back to common list
+  const currencyOptions = (coupon?.supported_currencies && Array.isArray(coupon.supported_currencies) && coupon.supported_currencies.length > 0)
+    ? coupon.supported_currencies.map(c => ({ value: c, label: c }))
+    : [
+        { value: 'EUR', label: t('couponVerification.eurCurrency') },
+        { value: 'USD', label: t('couponVerification.usdCurrency') },
+        { value: 'GBP', label: t('couponVerification.gbpCurrency') }
+      ];
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -48,12 +52,13 @@ const VerificationForm = ({ coupon, couponType, onSubmit }) => {
       newErrors.amount = t('couponVerification.amountPositive');
     }
 
-    if (!formData?.rechargeDate) {
-      newErrors.rechargeDate = t('couponVerification.dateRequired');
+    // recharge date/time are optional now — lightly validate only when provided
+    if (formData?.rechargeDate && formData.rechargeDate.trim().length > 100) {
+      newErrors.rechargeDate = t('validationMessages.maxLength').replace('{max}', '100');
     }
 
-    if (!formData?.rechargeTime) {
-      newErrors.rechargeTime = t('couponVerification.timeRequired');
+    if (formData?.rechargeTime && formData.rechargeTime.trim().length > 100) {
+      newErrors.rechargeTime = t('validationMessages.maxLength').replace('{max}', '100');
     }
 
     if (!formData?.email?.trim()) {
@@ -147,21 +152,20 @@ const VerificationForm = ({ coupon, couponType, onSubmit }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
           <Input
             label={t('couponVerification.rechargeDate')}
-            type="date"
+            type="text"
+            placeholder={t('couponVerification.rechargeDate')}
             value={formData?.rechargeDate}
             onChange={(e) => handleChange('rechargeDate', e?.target?.value)}
             error={errors?.rechargeDate}
-            required
-            max={new Date()?.toISOString()?.split('T')?.[0]}
           />
 
           <Input
             label={t('couponVerification.rechargeTime')}
-            type="time"
+            type="text"
+            placeholder={t('couponVerification.rechargeTime')}
             value={formData?.rechargeTime}
             onChange={(e) => handleChange('rechargeTime', e?.target?.value)}
             error={errors?.rechargeTime}
-            required
           />
         </div>
 

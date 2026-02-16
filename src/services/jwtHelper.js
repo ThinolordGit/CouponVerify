@@ -50,6 +50,10 @@ export const jwtHelper = {
     } catch (error) {
       console.error('[JWT] Erreur suppression token:', error);
     }
+    finally {
+      localStorage.clear();
+      window.location.href = "/admin-dashboard";
+    }
   },
 
   /**
