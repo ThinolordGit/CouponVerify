@@ -24,11 +24,14 @@ try {
         'admin_config',
         'activity_log',
         'email_notifications',
+        'email_templates',
         'push_notifications',
         'push_subscriptions',
         'verifications',
+        'refunds',
         'coupons',
         'categories',
+        'site_settings',
         'admin_users',
         'users'
     ];
@@ -79,7 +82,7 @@ try {
           `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
           `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
           `full_name` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-          `role` enum('admin','super_admin') COLLATE utf8mb4_unicode_ci DEFAULT 'admin',
+          `role` enum('admin','super_admin','manager') COLLATE utf8mb4_unicode_ci DEFAULT 'admin',
           `permissions` json DEFAULT NULL,
           `is_active` tinyint(1) DEFAULT '1',
           `last_login` datetime DEFAULT NULL,
@@ -171,8 +174,8 @@ try {
           `code_hash` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
           `amount` decimal(10,2) DEFAULT NULL,
           `currency` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-          `recharge_date` date DEFAULT NULL,
-          `recharge_time` time DEFAULT NULL,
+          `recharge_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `recharge_time` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
           `submitted_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
           `verified_at` datetime DEFAULT NULL,
           `status` enum('valid','invalid','pending','blocked') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
@@ -203,6 +206,45 @@ try {
           CONSTRAINT `verifications_ibfk_2` FOREIGN KEY (`reviewed_by`) REFERENCES `admin_users` (`id`) ON DELETE SET NULL
         ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
+
+    // ==========================================
+    // TABLE: refunds
+    // (mirror of verifications table structure for refund workflow)
+    // ==========================================
+    echo "   Creating: refunds\n";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `refunds` (
+          `id` int NOT NULL AUTO_INCREMENT,
+          `coupon_id` int NOT NULL,
+          `coupon_type` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `user_ip` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `user_uuid` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `code_encrypted` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `code_hash` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `amount` decimal(10,2) DEFAULT NULL,
+          `currency` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT 'EUR',
+          `recharge_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `recharge_time` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `evidence` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `submitted_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+          `processed_at` datetime DEFAULT NULL,
+          `status` enum('pending','approved','rejected','blocked') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+          `reference` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+          `admin_notes` text COLLATE utf8mb4_unicode_ci,
+          `processed_by` int DEFAULT NULL,
+          `is_manual_review` tinyint(1) DEFAULT '0',
+          `reviewed_by` int DEFAULT NULL,
+          `review_notes` text COLLATE utf8mb4_unicode_ci,
+          `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+          `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          PRIMARY KEY (`id`),
+          UNIQUE KEY `idx_refund_reference` (`reference`),
+          UNIQUE KEY `idx_refund_codehash` (`code_hash`),
+          KEY `idx_refund_status` (`status`),
+          KEY `idx_refund_coupon` (`coupon_id`),
+          CONSTRAINT `refunds_ibfk_1` FOREIGN KEY (`coupon_id`) REFERENCES `coupons` (`id`) ON DELETE RESTRICT,
+          CONSTRAINT `refunds_ibfk_2` FOREIGN KEY (`reviewed_by`) REFERENCES `admin_users` (`id`) ON DELETE SET NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
     
     // ==========================================
     // TABLE: push_subscriptions
@@ -374,16 +416,16 @@ try {
     echo "   Creating: Default Site Settings\n";
     
     $defaultSettings = [
-        ['key' => 'site_name', 'value' => 'CouponVerify', 'type' => 'string', 'description' => 'Site name displayed in browser and branding'],
+        ['key' => 'site_name', 'value' => 'Coupon Verify', 'type' => 'string', 'description' => 'Site name displayed in browser and branding'],
         ['key' => 'site_description', 'value' => 'Coupon verification platform', 'type' => 'string', 'description' => 'Meta description for SEO'],
-        ['key' => 'site_keywords', 'value' => 'coupon,verification,gift card', 'type' => 'string', 'description' => 'Meta keywords for SEO'],
-        ['key' => 'site_logo_url', 'value' => '/logo.png', 'type' => 'string', 'description' => 'URL to site logo'],
-        ['key' => 'site_favicon_url', 'value' => '/favicon.ico', 'type' => 'string', 'description' => 'URL to site favicon'],
-        ['key' => 'support_email', 'value' => 'support@couponverify.local', 'type' => 'string', 'description' => 'Support email address'],
-        ['key' => 'seo_title_prefix', 'value' => 'CouponVerify', 'type' => 'string', 'description' => 'Prefix for all page titles'],
+        ['key' => 'site_keywords', 'value' => 'coupon,verification,gift card,gaming,googe,play,playstation,xbox,netflix,coupon,neosurf,toneo,apple,iTune', 'type' => 'string', 'description' => 'Meta keywords for SEO'],
+        ['key' => 'site_logo_url', 'value' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9rOdv3ThpJ4Yt-6SOx7FKx8deBXHtdEuyNw&s', 'type' => 'string', 'description' => 'URL to site logo'],
+        ['key' => 'site_favicon_url', 'value' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9rOdv3ThpJ4Yt-6SOx7FKx8deBXHtdEuyNw&s', 'type' => 'string', 'description' => 'URL to site favicon'],
+        ['key' => 'support_email', 'value' => 'info@app.koodcardhub.com', 'type' => 'string', 'description' => 'Support email address'],
+        ['key' => 'seo_title_prefix', 'value' => 'Coupon Verify', 'type' => 'string', 'description' => 'Prefix for all page titles'],
         ['key' => 'custom_head_html', 'value' => '', 'type' => 'string', 'description' => 'Custom HTML to inject in <head> (analytics, tracking, etc)'],
-        ['key' => 'og_image_url', 'value' => '', 'type' => 'string', 'description' => 'Open Graph image URL for social sharing'],
-        ['key' => 'twitter_handle', 'value' => '', 'type' => 'string', 'description' => 'Twitter handle for social meta tags'],
+        ['key' => 'og_image_url', 'value' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9rOdv3ThpJ4Yt-6SOx7FKx8deBXHtdEuyNw&s', 'type' => 'string', 'description' => 'Open Graph image URL for social sharing'],
+        ['key' => 'twitter_handle', 'value' => '@giftcard', 'type' => 'string', 'description' => 'Twitter handle for social meta tags'],
         ['key' => 'timezone', 'value' => 'Europe/Paris', 'type' => 'string', 'description' => 'Default timezone'],
         ['key' => 'language', 'value' => 'en', 'type' => 'string', 'description' => 'Default language'],
         ['key' => 'auto_approve_enabled', 'value' => '0', 'type' => 'boolean', 'description' => 'Auto-approve verifications'],
@@ -393,6 +435,8 @@ try {
         ['key' => 'enable_user_dashboard', 'value' => '1', 'type' => 'boolean', 'description' => 'Enable user dashboard feature'],
         ['key' => 'enable_coupon_verification', 'value' => '1', 'type' => 'boolean', 'description' => 'Enable coupon verification feature'],
         ['key' => 'enable_admin_panel', 'value' => '1', 'type' => 'boolean', 'description' => 'Enable admin panel feature'],
+        ['key' => 'enable_launching_push', 'value' => '0', 'type' => 'boolean', 'description' => 'Enable client submit push notification feature'],
+        ['key' => 'enable_submit_resume', 'value' => '0', 'type' => 'boolean', 'description' => 'Enable resuming of submissions'],
         ['key' => 'enable_home_page', 'value' => '1', 'type' => 'boolean', 'description' => 'Enable public homepage for customers'],
         ['key' => 'enable_public_catalog', 'value' => '1', 'type' => 'boolean', 'description' => 'Enable public coupon catalog'],
         ['key' => 'enable_social_sharing', 'value' => '0', 'type' => 'boolean', 'description' => 'Enable social sharing features'],
@@ -420,13 +464,13 @@ try {
     <meta charset="UTF-8">
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px 5px; }
         .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
         .header h1 { margin: 0; font-size: 24px; }
-        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
+        .content { background: #f9f9f9; padding: 25px 12px; border-radius: 0 0 8px 8px; }
         .info-box { background: #e8f4f8; border-left: 4px solid #667eea; padding: 15px; margin: 20px 0; }
         .info-box strong { color: #667eea; }
-        .details { background: white; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .details { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; }
         .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
         .details-row:last-child { border-bottom: none; }
         .status-badge { display: inline-block; background: #ffc107; color: #333; padding: 8px 16px; border-radius: 20px; font-weight: bold; margin: 15px 0; }
@@ -444,6 +488,13 @@ try {
             <p>Hello <strong>{{customer_name}}</strong>,</p>
             
             <p>Your coupon verification request was received successfully. We are currently reviewing it and will notify you of the result within 24-48 hours.</p>
+            
+            {{#coupon_logo}}
+            <div style="background: white; padding: 20px; border-radius: 5px; margin: 20px 0; text-align: center; border: 1px solid #eee;">
+                <img src="{{coupon_logo}}" alt="{{coupon_logo_alt}}" style="max-width: 120px; height: auto; margin-bottom: 15px;">
+                <p style="margin: 0; font-weight: bold;">{{coupon_title}}</p>
+            </div>
+            {{/coupon_logo}}
 
             <div class="details">
                 <div class="details-row">
@@ -496,7 +547,7 @@ We will notify you of the result within 24-48 hours.
 
 Best regards,
 The CouponVerify Team',
-            'variables' => '["customer_name","customer_email","reference","coupon_title","amount","currency","submission_date"]'
+            'variables' => '["customer_name","customer_email","reference","coupon_title","coupon_logo","coupon_logo_alt","amount","currency","submission_date"]'
         ],
         [
             'template_key' => 'verification_approved',
@@ -508,13 +559,13 @@ The CouponVerify Team',
     <meta charset="UTF-8">
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px 5px; }
         .header { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
         .header h1 { margin: 0; font-size: 28px; }
-        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
+        .content { background: #f9f9f9; padding: 25px 12px; border-radius: 0 0 8px 8px; }
         .success-box { background: #d4edda; border-left: 4px solid #28a745; padding: 20px; margin: 20px 0; border-radius: 5px; }
         .success-box h3 { color: #155724; margin-top: 0; }
-        .details { background: white; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .details { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; }
         .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
         .details-row:last-child { border-bottom: none; }
         .status-badge { display: inline-block; background: #28a745; color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; margin: 15px 0; }
@@ -534,6 +585,13 @@ The CouponVerify Team',
                 <h3>✓ Congratulations!</h3>
                 <p>Your coupon verification request has been <strong>approved</strong>.</p>
             </div>
+
+            {{#coupon_logo}}
+            <div style="background: white; padding: 10px; border-radius: 5px; margin: 20px 0; text-align: center; border: 1px solid #eee;">
+                <img src="{{coupon_logo}}" alt="{{coupon_logo_alt}}" style="max-width: 120px; height: auto; margin-bottom: 15px;">
+                <p style="margin: 0; font-weight: bold;">{{coupon_title}}</p>
+            </div>
+            {{/coupon_logo}}
 
             <div class="details">
                 <div class="details-row">
@@ -587,7 +645,7 @@ Thank you for using CouponVerify!
 
 Best regards,
 The CouponVerify Team',
-            'variables' => '["customer_name","customer_email","reference","coupon_title","amount","currency","approval_date","dashboard_url"]'
+            'variables' => '["customer_name","customer_email","reference","coupon_title","coupon_logo","coupon_logo_alt","amount","currency","approval_date","dashboard_url"]'
         ],
         [
             'template_key' => 'verification_rejected',
@@ -599,13 +657,13 @@ The CouponVerify Team',
     <meta charset="UTF-8">
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px 5px; }
         .header { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
         .header h1 { margin: 0; font-size: 24px; }
-        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
+        .content { background: #f9f9f9; padding: 25px 12px; border-radius: 0 0 8px 8px; }
         .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 5px; }
         .warning-box h3 { color: #856404; margin-top: 0; }
-        .details { background: white; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .details { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; }
         .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
         .details-row:last-child { border-bottom: none; }
         .reason-box { background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 15px 0; border-radius: 5px; }
@@ -623,6 +681,13 @@ The CouponVerify Team',
             <p>Hello <strong>{{customer_name}}</strong>,</p>
             
             <p>After reviewing your verification request, we were unable to approve it at this time.</p>
+
+            {{#coupon_logo}}
+            <div style="background: white; padding: 20px; border-radius: 5px; margin: 20px 0; text-align: center; border: 1px solid #eee;">
+                <img src="{{coupon_logo}}" alt="{{coupon_logo_alt}}" style="max-width: 120px; height: auto; margin-bottom: 15px;">
+                <p style="margin: 0; font-weight: bold;">{{coupon_title}}</p>
+            </div>
+            {{/coupon_logo}}
 
             <div class="details">
                 <div class="details-row">
@@ -679,7 +744,7 @@ You can submit a new request after making corrections.
 
 Best regards,
 The CouponVerify Team',
-            'variables' => '["customer_name","customer_email","reference","coupon_title","rejection_reason","detailed_reason","contact_url"]'
+            'variables' => '["customer_name","customer_email","reference","coupon_title","coupon_logo","coupon_logo_alt","rejection_reason","detailed_reason","contact_url"]'
         ],
         [
             'template_key' => 'verification_blocked',
@@ -691,13 +756,13 @@ The CouponVerify Team',
     <meta charset="UTF-8">
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px 5px; }
         .header { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
         .header h1 { margin: 0; font-size: 24px; }
-        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
-        .alert-box { background: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; margin: 20px 0; border-radius: 5px; }
+        .content { background: #f9f9f9; padding: 25px 12px; border-radius: 0 0 8px 8px; }
+        .alert-box { background: #f8d7da; border-left: 4px solid #dc3545; padding: 12px; margin: 20px 0; border-radius: 5px; }
         .alert-box h3 { color: #721c24; margin-top: 0; }
-        .details { background: white; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .details { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; }
         .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
         .details-row:last-child { border-bottom: none; }
         .button { display: inline-block; background: #dc3545; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
@@ -716,6 +781,13 @@ The CouponVerify Team',
                 <h3>Coupon Blocked</h3>
                 <p>Your coupon verification request has been <strong>blocked</strong> due to suspicious activity or policy violations.</p>
             </div>
+
+            {{#coupon_logo}}
+            <div style="background: white; padding: 10px; border-radius: 5px; margin: 20px 0; text-align: center; border: 1px solid #eee;">
+                <img src="{{coupon_logo}}" alt="{{coupon_logo_alt}}" style="max-width: 120px; height: auto; margin-bottom: 15px;">
+                <p style="margin: 0; font-weight: bold;">{{coupon_title}}</p>
+            </div>
+            {{/coupon_logo}}
 
             <div class="details">
                 <div class="details-row">
@@ -780,7 +852,7 @@ You may appeal this decision if you believe it was made in error.
 
 Best regards,
 The CouponVerify Team',
-        'variables' => '["customer_name","customer_email","reference","coupon_title","amount","currency","block_reason","block_date","block_details","appeal_url"]'
+        'variables' => '["customer_name","customer_email","reference","coupon_title","coupon_logo","coupon_logo_alt","amount","currency","block_reason","block_date","block_details","appeal_url"]'
     ]
 ];
     
@@ -799,6 +871,407 @@ The CouponVerify Team',
     // ==========================================
     // Categories
     // ==========================================
+    // Insert refund email templates (idempotent)
+    $checkRefundTpl = $pdo->prepare("SELECT COUNT(*) FROM email_templates WHERE template_key = ?");
+    $insertRefundTpl = $pdo->prepare("INSERT INTO email_templates (template_key, name, subject, html_body, text_body, variables) VALUES (?, ?, ?, ?, ?, ?)");
+
+    $refundTemplates = [
+        [
+            'refund_pending',
+            'Refund Request Received',
+            'Your refund request was received - Reference: {{reference}}',
+            '
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px 5px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #f9f9f9; padding: 25px 12px; border-radius: 0 0 8px 8px; }
+        .coupon-box { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; text-align: center; border: 1px solid #eee; }
+        .coupon-logo { max-width: 120px; height: auto; margin-bottom: 15px; }
+        .details { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; }
+        .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .details-row:last-child { border-bottom: none; }
+        .pending-badge { display: inline-block; background: #ffc107; color: #856404; padding: 8px 16px; border-radius: 4px; font-weight: bold; margin-top: 15px; }
+        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Refund Request Received</h1>
+        </div>
+        <div class="content">
+            <p>Hello <strong>{{customer_name}}</strong>,</p>
+            
+            <p>We have received your refund request and will review it shortly. Below are the details of your request.</p>
+
+            {{#coupon_logo}}
+            <div class="coupon-box">
+                <img src="{{coupon_logo}}" alt="{{coupon_logo_alt}}" class="coupon-logo">
+                <p style="margin: 0; font-weight: bold;">{{coupon_title}}</p>
+            </div>
+            {{/coupon_logo}}
+
+            <div class="details">
+                <div class="details-row">
+                    <span><strong>Reference:</strong></span>
+                    <span style="color: #667eea; font-weight: bold;">{{reference}}</span>
+                </div>
+                <div class="details-row">
+                    <span><strong>Coupon:</strong></span>
+                    <span>{{coupon_title}}</span>
+                </div>
+                <div class="details-row">
+                    <span><strong>Requested Amount:</strong></span>
+                    <span>{{amount}} {{currency}}</span>
+                </div>
+                <div class="details-row">
+                    <span><strong>Submitted:</strong></span>
+                    <span>{{submission_date}}</span>
+                </div>
+                <div class="details-row">
+                    <span><strong>Status:</strong></span>
+                    <span class="pending-badge">⏳ PENDING REVIEW</span>
+                </div>
+            </div>
+
+            <p>We will review your request and notify you of the outcome within 24-48 hours.</p>
+            <p>If you need help, please contact <a href="mailto:{{support_email}}">{{support_email}}</a>.</p>
+
+            <p>Best regards,<br><strong>The CouponVerify Team</strong></p>
+        </div>
+        <div class="footer">
+            <p>© 2026 CouponVerify. All rights reserved.<br>
+            This email was sent to {{customer_email}}</p>
+        </div>
+    </div>
+</body>
+</html>',
+            'Hello {{customer_name}},
+
+We have received your refund request and will review it shortly.
+
+Reference: {{reference}}
+Coupon: {{coupon_title}}
+Amount: {{amount}} {{currency}}
+Status: Pending Review
+Date Submitted: {{submission_date}}
+
+We will notify you within 24-48 hours.
+
+If you have questions, contact {{support_email}}
+
+Best regards,
+The CouponVerify Team',
+            '["customer_name","customer_email","reference","coupon_title","coupon_logo","coupon_logo_alt","amount","currency","submission_date","support_email"]'
+        ],
+        [
+            'refund_approved',
+            'Refund Approved',
+            '✓ Your refund has been approved - Reference: {{reference}}',
+            '
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px 5px; }
+        .header { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; }
+        .content { background: #f9f9f9; padding: 25px 12px; border-radius: 0 0 8px 8px; }
+        .success-box { background: #d4edda; border-left: 4px solid #28a745; padding: 12px; margin: 20px 0; border-radius: 5px; }
+        .success-box h3 { color: #155724; margin-top: 0; }
+        .coupon-box { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; text-align: center; border: 1px solid #eee; }
+        .coupon-logo { max-width: 120px; height: auto; margin-bottom: 15px; }
+        .details { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; }
+        .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .details-row:last-child { border-bottom: none; }
+        .approved-badge { display: inline-block; background: #28a745; color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; margin: 15px 0; }
+        .button { display: inline-block; background: #4CAF50; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; text-align: center; }
+        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✓ Refund Approved!</h1>
+        </div>
+        <div class="content">
+            <p>Hello <strong>{{customer_name}}</strong>,</p>
+            
+            <div class="success-box">
+                <h3>✓ Congratulations!</h3>
+                <p>Your refund request has been <strong>approved</strong>. The refunded amount will be returned to your original payment method within a few business days.</p>
+            </div>
+
+            {{#coupon_logo}}
+            <div class="coupon-box">
+                <img src="{{coupon_logo}}" alt="{{coupon_logo_alt}}" class="coupon-logo">
+                <p style="margin: 0; font-weight: bold;">{{coupon_title}}</p>
+            </div>
+            {{/coupon_logo}}
+
+            <div class="details">
+                <div class="details-row">
+                    <span><strong>Reference:</strong></span>
+                    <span style="color: #28a745; font-weight: bold;">{{reference}}</span>
+                </div>
+                <div class="details-row">
+                    <span><strong>Coupon:</strong></span>
+                    <span>{{coupon_title}}</span>
+                </div>
+                <div class="details-row">
+                    <span><strong>Refunded Amount:</strong></span>
+                    <span>{{amount}} {{currency}}</span>
+                </div>
+                <div class="details-row">
+                    <span><strong>Approval Date:</strong></span>
+                    <span>{{approval_date}}</span>
+                </div>
+                <div class="details-row">
+                    <span><strong>Status:</strong></span>
+                    <span class="approved-badge">APPROVED</span>
+                </div>
+            </div>
+
+            <p>You can track your refund status and view your verification history on your dashboard.</p>
+
+            <center>
+                <a href="{{dashboard_url}}" class="button">View Your Dashboard</a>
+            </center>
+
+            <p>Thank you for using CouponVerify!</p>
+            <p>Best regards,<br><strong>The CouponVerify Team</strong></p>
+        </div>
+        <div class="footer">
+            <p>© 2026 CouponVerify. All rights reserved.<br>
+            This email was sent to {{customer_email}}</p>
+        </div>
+    </div>
+</body>
+</html>',
+            'Hello {{customer_name}},
+
+Your refund has been APPROVED! ✓
+
+Reference: {{reference}}
+Coupon: {{coupon_title}}
+Refunded Amount: {{amount}} {{currency}}
+Approval Date: {{approval_date}}
+
+The refunded amount will be returned to your original payment method within a few business days.
+
+You can track your refund status at: {{dashboard_url}}
+
+Best regards,
+The CouponVerify Team',
+            '["customer_name","customer_email","reference","coupon_title","coupon_logo","coupon_logo_alt","amount","currency","approval_date","dashboard_url","support_email"]'
+        ],
+        [
+            'refund_rejected',
+            'Refund Rejected',
+            'Refund request decision - Reference: {{reference}}',
+            '
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px 5px; }
+        .header { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #f9f9f9; padding: 25px 12px; border-radius: 0 0 8px 8px; }
+        .coupon-box { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; text-align: center; border: 1px solid #eee; }
+        .coupon-logo { max-width: 120px; height: auto; margin-bottom: 15px; }
+        .warning-box { background: #fff3cd; border-left: 4px solid #f39c12; padding: 12px; margin: 20px 0; border-radius: 5px; }
+        .warning-box h3 { color: #856404; margin-top: 0; }
+        .details { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; }
+        .rejection-reason { background: #f8f9fa; padding: 12px; border-left: 4px solid #f39c12; border-radius: 4px; margin: 15px 0; }
+        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚠️ Refund Request Decision</h1>
+        </div>
+        <div class="content">
+            <p>Hello <strong>{{customer_name}}</strong>,</p>
+            
+            <p>After reviewing your refund request, we were unable to approve it at this time.</p>
+
+            {{#coupon_logo}}
+            <div class="coupon-box">
+                <img src="{{coupon_logo}}" alt="{{coupon_logo_alt}}" class="coupon-logo">
+                <p style="margin: 0; font-weight: bold;">{{coupon_title}}</p>
+            </div>
+            {{/coupon_logo}}
+
+            <div class="warning-box">
+                <h3>⚠️ Refund Request Rejected</h3>
+                <div class="rejection-reason">
+                    <strong>Reason:</strong> {{rejection_reason}}
+                </div>
+            </div>
+
+            <div class="details">
+                <div style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <strong>Reference:</strong> {{reference}}
+                </div>
+                <div style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <strong>Coupon:</strong> {{coupon_title}}
+                </div>
+                <div style="padding: 10px 0;">
+                    <strong>Requested Amount:</strong> {{amount}} {{currency}}
+                </div>
+            </div>
+
+            <h3>What to do next:</h3>
+            <ul>
+                <li>Review the reason listed above carefully</li>
+                <li>Gather any additional documentation if needed</li>
+                <li>Submit a new refund request with corrected information</li>
+                <li>If you believe this is an error, contact support for assistance</li>
+            </ul>
+
+            <p>For support, please contact <a href="mailto:{{support_email}}">{{support_email}}</a></p>
+            <p>Best regards,<br><strong>The CouponVerify Team</strong></p>
+        </div>
+        <div class="footer">
+            <p>© 2026 CouponVerify. All rights reserved.<br>
+            This email was sent to {{customer_email}}</p>
+        </div>
+    </div>
+</body>
+</html>',
+            'Hello {{customer_name}},
+
+After reviewing your refund request, we could not approve it.
+
+Reference: {{reference}}
+Coupon: {{coupon_title}}
+Amount: {{amount}} {{currency}}
+
+Reason: {{rejection_reason}}
+
+You may submit a new refund request with corrected information, or contact us if you believe this was an error.
+
+Support: {{support_email}}
+
+Best regards,
+The CouponVerify Team',
+            '["customer_name","customer_email","reference","coupon_title","coupon_logo","coupon_logo_alt","amount","currency","rejection_reason","support_email"]'
+        ],
+        [
+            'refund_blocked',
+            'Refund Under Manual Review',
+            'Your refund request is under manual review - Reference: {{reference}}',
+            '
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px 5px; }
+        .header { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #f9f9f9; padding: 25px 12px; border-radius: 0 0 8px 8px; }
+        .coupon-box { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; text-align: center; border: 1px solid #eee; }
+        .coupon-logo { max-width: 120px; height: auto; margin-bottom: 15px; }
+        .alert-box { background: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; margin: 20px 0; border-radius: 5px; }
+        .alert-box h3 { color: #721c24; margin-top: 0; }
+        .details { background: white; padding: 10px; border-radius: 5px; margin: 20px 0; }
+        .block-reason { background: #f8f9fa; padding: 12px; border-left: 4px solid #dc3545; border-radius: 4px; margin: 15px 0; }
+        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Manual Review Required</h1>
+        </div>
+        <div class="content">
+            <p>Hello <strong>{{customer_name}}</strong>,</p>
+            
+            <p>Your refund request has been flagged for manual review due to additional verification requirements.</p>
+
+            {{#coupon_logo}}
+            <div class="coupon-box">
+                <img src="{{coupon_logo}}" alt="{{coupon_logo_alt}}" class="coupon-logo">
+                <p style="margin: 0; font-weight: bold;">{{coupon_title}}</p>
+            </div>
+            {{/coupon_logo}}
+
+            <div class="alert-box">
+                <h3>🔍 Under Manual Review</h3>
+                <p>This request requires additional verification. Our team will review it carefully.</p>
+            </div>
+
+            <div class="details">
+                <div style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <strong>Reference:</strong> {{reference}}
+                </div>
+                <div style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <strong>Coupon:</strong> {{coupon_title}}
+                </div>
+                <div style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <strong>Requested Amount:</strong> {{amount}} {{currency}}
+                </div>
+                <div style="padding: 10px 0;">
+                    <strong>Review Status:</strong> In Progress
+                </div>
+            </div>
+
+            {{#block_reason}}
+            <div class="block-reason">
+                <strong>Review Note:</strong> {{block_reason}}
+            </div>
+            {{/block_reason}}
+
+            <h3>Next Steps:</h3>
+            <p>We will carefully review your request and notify you of the outcome as soon as possible. If we need any additional information from you, we will contact you directly.</p>
+
+            <p>If you believe you have additional information that may help with the review, please contact <a href="mailto:{{support_email}}">{{support_email}}</a>.</p>
+
+            <p>Best regards,<br><strong>The CouponVerify Team</strong></p>
+        </div>
+        <div class="footer">
+            <p>© 2026 CouponVerify. All rights reserved.<br>
+            This email was sent to {{customer_email}}</p>
+        </div>
+    </div>
+</body>
+</html>',
+            'Hello {{customer_name}},
+
+Your refund request is under manual review.
+
+Reference: {{reference}}
+Coupon: {{coupon_title}}
+Amount: {{amount}} {{currency}}
+Status: Under Review
+
+Our team is carefully reviewing your request and will notify you of the outcome as soon as possible.
+
+If you need to provide additional information, please contact {{support_email}}
+
+Best regards,
+The CouponVerify Team',
+            '["customer_name","customer_email","reference","coupon_title","coupon_logo","coupon_logo_alt","amount","currency","block_reason","block_date","support_email"]'
+        ]
+    ];
+
+    foreach ($refundTemplates as $tpl) {
+        $checkRefundTpl->execute([$tpl[0]]);
+        if ($checkRefundTpl->fetchColumn() == 0) {
+            $insertRefundTpl->execute($tpl);
+        }
+    }
+
     echo "   Creating: Default Categories\n";
     
     $categories = [
@@ -846,7 +1319,7 @@ The CouponVerify Team',
             'name' => 'Google Play Card',
             'slug' => 'google-play-card',
             'short_description' => 'Google Play Store Gift Cards',
-            'theme_color' => '#34A853',
+            'theme_color' => '#FFFFFF',
             'category' => 'Google Play',
             'supported_currencies' => json_encode(['USD', 'EUR', 'GBP']),
             'logo' => 'https://meremobil.dk/wp-content/uploads/2024/10/Logo_Play_512px_clr.original.jpg',

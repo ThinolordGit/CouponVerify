@@ -8,6 +8,7 @@ namespace App\Controllers;
 
 use App\Models\VerificationModel;
 use App\Models\CouponModel;
+use App\Models\RefundModel;
 use App\Services\EmailService;
 use App\Services\PushNotificationService;
 
@@ -15,13 +16,15 @@ class AdminController extends BaseController {
 
     private $verificationModel;
     private $couponModel;
+    private $refundModel;
     private $emailService;
     private $pushService;
-
+    
     public function __construct($pdo) {
         parent::__construct($pdo);
         $this->verificationModel = new VerificationModel($this->sqlHelper);
         $this->couponModel = new CouponModel($this->sqlHelper);
+        $this->refundModel = new RefundModel($this->sqlHelper);
         $this->emailService = new EmailService($this->sqlHelper);
         $this->pushService = new PushNotificationService($this->sqlHelper);
     }
@@ -97,6 +100,14 @@ class AdminController extends BaseController {
                     'changeType' => 'decrease',
                     'icon' => 'Clock',
                     'iconBg' => 'bg-gradient-to-br from-amber-500 to-amber-600'
+                ],
+                [
+                    'title' => 'Refund Requests',
+                    'value' => (string)($this->refundModel->countAll(['status' => 'pending']) ?? 0),
+                    'change' => '+0',
+                    'changeType' => 'neutral',
+                    'icon' => 'DollarSign',
+                    'iconBg' => 'bg-gradient-to-br from-red-500 to-red-600'
                 ],
                 [
                     'title' => 'Active Coupons',
@@ -319,6 +330,192 @@ class AdminController extends BaseController {
     }
 
     /**
+     * GET /api/admin/refunds - Get all refunds (with filters)
+     */
+    public function getRefunds() {
+        $this->requireMethod('GET');
+
+        try {
+            $status = $_GET['status'] ?? null;
+            $limit = (int)($_GET['limit'] ?? 50);
+            $offset = (int)($_GET['offset'] ?? 0);
+
+            $filters = [
+                'limit' => $limit,
+                'offset' => $offset
+            ];
+
+            if ($status) {
+                $filters['status'] = $status;
+            }
+
+            $refunds = $this->refundModel->getAll($filters);
+
+            // Sanitize sensitive data while preserving code for admin UI
+            $sanitized = [];
+            foreach ($refunds as $r) {
+                // unset($r['code_encrypted']);
+                $sanitized[] = $r;
+            }
+
+            $this->success([
+                'refunds' => $sanitized
+            ], 'Refunds retrieved');
+
+        } catch (\Exception $e) {
+            error_log("Error fetching refunds: " . $e->getMessage());
+            $this->error('Failed to fetch refunds', 500);
+        }
+    }
+
+    /**
+     * POST /api/admin/refunds/:id/approve - Approve refund
+     */
+    public function approveRefund($refundId) {
+        $this->requireMethod('POST');
+
+        try {
+            $refund = $this->refundModel->getById((int)$refundId);
+
+            if (!$refund) {
+                $this->notFound('Refund not found');
+            }
+
+            $updated = $this->refundModel->update((int)$refundId, [
+                'status' => 'approved',
+                'processed_at' => date('Y-m-d H:i:s')
+            ]);
+
+            if (!$updated) {
+                $this->error('Failed to approve refund', 500);
+            }
+
+            // Get coupon for notifications
+            $coupon = $this->couponModel->getById($refund['coupon_id']);
+            
+            // Send notifications in background (non-blocking)
+            if ($coupon) {
+                try {
+                    $this->sendAsync('refundStatusUpdate', [
+                        'refund' => $refund,
+                        'coupon' => $coupon,
+                        'newStatus' => 'approved'
+                    ]);
+                } catch (\Exception $e) {
+                    error_log("Background task failed (approve refund): " . $e->getMessage());
+                }
+            }
+
+            $this->success(['refund' => $updated], 'Refund approved', 200);
+        
+        } catch (\Exception $e) {
+            error_log("Error approving refund: " . $e->getMessage());
+            $this->error('Failed to approve refund', 500);
+        }
+    }
+
+    /**
+     * POST /api/admin/refunds/:id/reject - Reject refund
+     */
+    public function rejectRefund($refundId) {
+        $this->requireMethod('POST');
+
+        try {
+            $body = $this->getBody();
+            $reason = $body['reason'] ?? 'No reason provided';
+
+            $refund = $this->refundModel->getById((int)$refundId);
+
+            if (!$refund) {
+                $this->notFound('Refund not found');
+            }
+
+            $updated = $this->refundModel->update((int)$refundId, [
+                'status' => 'rejected',
+                'admin_notes' => $reason,
+                'processed_at' => date('Y-m-d H:i:s')
+            ]);
+
+            if (!$updated) {
+                $this->error('Failed to reject refund', 500);
+            }
+
+            // Get coupon for notifications
+            $coupon = $this->couponModel->getById($refund['coupon_id']);
+
+            // Send notifications in background (non-blocking)
+            if ($coupon) {
+                try {
+                    $this->sendAsync('refundStatusUpdate', [
+                        'refund' => $refund,
+                        'coupon' => $coupon,
+                        'newStatus' => 'rejected',
+                        'blocking_reason' => $reason
+                    ]);
+                } catch (\Exception $e) {
+                    error_log("Background task failed (reject refund): " . $e->getMessage());
+                }
+            }
+
+            $this->success(['refund' => $updated], 'Refund rejected', 200);
+
+        } catch (\Exception $e) {
+            error_log("Error rejecting refund: " . $e->getMessage());
+            $this->error('Failed to reject refund', 500);
+        }
+    }
+
+    /**
+     * POST /api/admin/refunds/:id/block - Block refund
+     */
+    public function blockRefund($refundId) {
+        $this->requireMethod('POST');
+
+        try {
+            $body = $this->getBody();
+            $reason = $body['reason'] ?? 'Blocked by admin';
+
+            $refund = $this->refundModel->getById((int)$refundId);
+
+            if (!$refund) {
+                $this->notFound('Refund not found');
+            }
+
+            $updated = $this->refundModel->update((int)$refundId, [
+                'status' => 'blocked',
+                'blocking_reason' => $reason,
+                'blocked_at' => date('Y-m-d H:i:s')
+            ]);
+
+            if (!$updated) {
+                $this->error('Failed to block refund', 500);
+            }
+
+            // Get coupon for notifications
+            $coupon = $this->couponModel->getById($refund['coupon_id']);
+
+            // Send notifications in background (non-blocking)
+            if ($coupon) {
+                try {
+                    $this->sendAsync('refundStatusUpdate', [
+                        'refund' => $refund,
+                        'coupon' => $coupon,
+                        'newStatus' => 'blocked'
+                    ]);
+                } catch (\Exception $e) {
+                    error_log("Background task failed (block refund): " . $e->getMessage());
+                }
+            }
+
+            $this->success(['refund' => $updated], 'Refund blocked', 200);
+
+        } catch (\Exception $e) {
+            error_log("Error blocking refund: " . $e->getMessage());
+            $this->error('Failed to block refund', 500);
+        }
+    }
+
+    /**
      * Execute async background task without blocking response
      * Uses output buffering to detach from client connection
      */
@@ -331,7 +528,7 @@ class AdminController extends BaseController {
             }
             ob_end_flush();
             flush();
-
+            
             // Now execute background tasks
             switch ($method) {
                 case 'statusUpdate':
@@ -347,6 +544,29 @@ class AdminController extends BaseController {
                     $userUUID = $verification['user_uuid'] ?? null;
                     if ($userUUID) {
                         $this->pushService->notifyClientStatusUpdate($verification, $coupon, $newStatus, $userUUID);
+                    }
+                    break;
+                case 'refundStatusUpdate':
+                    $refund = $args['refund'];
+                    $coupon = $args['coupon'];
+                    $blockingReason = $args['blocking_reason'];
+                    $newStatus = $args['newStatus'];
+                    
+                    // Send email notification
+                    try {
+                        $this->emailService->sendRefundStatusUpdate($refund, $newStatus, $blockingReason, $coupon);
+                    } catch (\Exception $e) {
+                        error_log("Refund email notification failed: " . $e->getMessage());
+                    }
+                    
+                    // Send push notification to client
+                    try {
+                        $userUUID = $refund['user_uuid'] ?? null;
+                        if ($userUUID) {
+                            $this->pushService->notifyClientRefundStatusUpdate($refund, $newStatus, $userUUID, $coupon);
+                        }
+                    } catch (\Exception $e) {
+                        error_log("Refund push notification failed: " . $e->getMessage());
                     }
                     break;
             }

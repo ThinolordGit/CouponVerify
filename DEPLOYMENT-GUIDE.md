@@ -104,7 +104,7 @@ php install-database.php
 
 ### Admin User
 - **Username:** `admin`
-- **Password:** `admin` (À CHANGER IMMÉDIATEMENT!)
+- **Password:** `admin@admin2026` (À CHANGER IMMÉDIATEMENT!)
 - **Email:** `admin@giftcard.local`
 - **Role:** `super_admin`
 
@@ -188,13 +188,6 @@ Dans l'interface admin:
 
 ### Installation
 - **`install-database.php`** - ✅ Script d'installation (À CONSERVER)
-
-### Nettoyage
-- `cleanup-temp-files.sh` - Script bash (Linux/Mac)
-- `cleanup-temp-files.bat` - Script batch (Windows)
-- `cleanup-temp-files.ps1` - Script PowerShell (Windows)
-
-**Ces scripts ne sont que pour le développement et peuvent être supprimés après déploiement.**
 
 ---
 

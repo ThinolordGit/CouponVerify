@@ -41,10 +41,15 @@ function handleGetPublicFeatures() {
     try {
         // List of public features
         $featureKeys = [
-            'enable_home_page',
+            'enable_user_dashboard',
             'enable_coupon_verification',
+            'enable_admin_panel',
+            'enable_launching_push',
+            'enable_submit_resume',
+            'enable_home_page',
             'enable_public_catalog',
-            'enable_social_sharing'
+            'enable_social_sharing',
+            'enable_api_access'
         ];
 
         $stmt = $pdo->prepare("SELECT `key`, value FROM site_settings WHERE `key` IN (" . 

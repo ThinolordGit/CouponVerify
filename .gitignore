@@ -1,0 +1,5 @@
+node_module/
+.env
+composer.lock
+composer.phar
+composer.phar.bak

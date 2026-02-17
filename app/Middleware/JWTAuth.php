@@ -109,12 +109,11 @@ class JWTAuth {
      * @return string|null Token or null if not found
      */
     private static function getTokenFromHeader() {
-        // Get Authorization header
-        $headers = shell_exec('cd /d %cd% && apache_request_headers 2>/dev/null || echo');
-        
+        // Get Authorization header (avoid shell_exec — may be disabled or invoke namespaced call)
+        	$headers = null;
         // Try different methods to get Authorization header
         $authHeader = null;
-
+        
         // Method 1: apache_request_headers (most reliable)
         if (function_exists('apache_request_headers')) {
             $headers = apache_request_headers();

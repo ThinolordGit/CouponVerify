@@ -30,7 +30,7 @@ try {
         require_once __DIR__ . '/settings.php';
         exit;
     }
-
+    
     // All other admin routes require authentication
     AuthController::requireAuth();
 
@@ -46,6 +46,10 @@ try {
 
         case 'verifications':
             require_once __DIR__ . '/verifications-mgmt.php';
+            break;
+
+        case 'refunds':
+            require_once __DIR__ . '/refunds-mgmt.php';
             break;
         
         case 'users':

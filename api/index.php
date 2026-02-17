@@ -36,6 +36,10 @@ try {
             require_once __DIR__ . '/verifications.php';
             break;
 
+        case 'refunds':
+            require_once __DIR__ . '/refunds.php';
+            break;
+
         case 'categories':
             require_once __DIR__ . '/categories.php';
             break;

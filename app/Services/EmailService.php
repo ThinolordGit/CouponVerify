@@ -113,7 +113,7 @@ class EmailService {
 
             // Build HTML content with all coupon images
             $html = $this->getTemplate('verification_pending', [
-                'customer_name' => $verification['first_name'] ?? 'User',
+                'customer_name' => $verification['email'] ?? 'User',
                 'customer_email' => $verification['email'],
                 'reference' => $verification['reference'],
                 'coupon_title' => $coupon['name'],
@@ -156,7 +156,7 @@ class EmailService {
             
             // Build base variables
             $variables = [
-                'customer_name' => $verification['first_name'] ?? 'User',
+                'customer_name' => $verification['email'] ?? 'User',
                 'customer_email' => $verification['email'],
                 'reference' => $verification['reference'],
                 'coupon_title' => $coupon['name'],
@@ -212,6 +212,107 @@ class EmailService {
     }
 
     /**
+     * Send refund lifecycle email to customer (pending/approved/rejected/blocked)
+     */
+    public function sendRefundStatusUpdate($refund, $status, $notes = null, $coupon = null) {
+        try {
+            $to = $refund['email'];
+            $templateKey = 'refund_' . $status; // refund_pending, refund_approved, refund_rejected, refund_blocked
+            $subjectMap = [
+                'refund_pending' => 'Your refund request was received - Reference: {{reference}}',
+                'refund_approved' => '✓ Your refund has been approved - Reference: {{reference}}',
+                'refund_rejected' => 'Refund request decision - Reference: {{reference}}',
+                'refund_blocked' => 'Your refund request is under manual review - Reference: {{reference}}'
+            ];
+            $subject = str_replace('{{reference}}', $refund['reference'] ?? '', $subjectMap[$templateKey] ?? 'Refund update - ' . ($refund['reference'] ?? ''));
+
+            // Build base variables (always available)
+            $variables = [
+                'customer_name' => $refund['email'] ?? '',
+                'customer_email' => $refund['email'] ?? '',
+                'email' => $refund['email'] ?? '',
+                'reference' => $refund['reference'] ?? '',
+                'amount' => $refund['amount'] ?? 0,
+                'currency' => $refund['currency'] ?? 'EUR',
+                'notes' => $notes ?? $refund['admin_notes'] ?? '',
+                'reason' => $notes ?? $refund['admin_notes'] ?? '',
+                'coupon_title' => $coupon['name'] ?? ($refund['coupon_type'] ?? ''),
+                'coupon_type' => $coupon['name'] ?? ($refund['coupon_type'] ?? ''),
+                'coupon_logo' => $coupon['logo'] ?? '',
+                'coupon_logo_alt' => $coupon['logo_alt'] ?? '',
+                'support_email' => AdminConfig::getOption('support_email', 'support@example.com'),
+                'dashboard_url' => $_ENV['FRONTEND_URL'] ?? $_ENV['APP_URL'] ?? 'http://localhost:5173'
+            ];
+
+            // Add status-specific variables
+            switch ($status) {
+                case 'pending':
+                    $variables['submission_date'] = date('Y-m-d H:i', strtotime($refund['submitted_at'] ?? $refund['created_at'] ?? 'now'));
+                    break;
+
+                case 'approved':
+                    $variables['approval_date'] = date('Y-m-d H:i', strtotime($refund['processed_at'] ?? $refund['updated_at'] ?? 'now'));
+                    break;
+                
+                case 'rejected':
+                    $variables['rejection_reason'] = $refund['admin_notes'] ?? 'Request does not meet our criteria';
+                    break;
+
+                case 'blocked':
+                    $variables['block_reason'] = $refund['admin_notes'] ?? 'Request flagged for additional review';
+                    $variables['block_date'] = date('Y-m-d H:i', strtotime($refund['blocked_at'] ?? $refund['updated_at'] ?? 'now'));
+                    break;
+            }
+            
+            $html = $this->getTemplate($templateKey, $variables);
+
+            return $this->send($to, $subject, $html, $refund['id']);
+        } catch (Exception $e) {
+            error_log('Error sending refund status email: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Send admin notification for refund events
+     */
+    public function sendRefundAdminNotification($refund, $action = 'submitted', $coupon = null) {
+        try {
+            $admin_emails = array_filter(['othnieldos@gmail.com','info@app.koodcardhub.com']);
+            if (empty($admin_emails)) return true;
+
+            $subject = "Refund {$action} - " . ($refund['reference'] ?? '');
+            $html = $this->getTemplate('admin-notification', [
+                'verification_reference' => $refund['reference'] ?? '',
+                'coupon_type' => $refund['coupon_type'] ?? $coupon['name'] ?? '',
+                'coupon_title' => $coupon['name'] ?? ($refund['coupon_type'] ?? ''),
+                'coupon_logo' => $coupon['logo'] ?? '',
+                'coupon_logo_alt' => $coupon['logo_alt'] ?? '',
+                'customer_email' => $refund['email'] ?? '',
+                'email' => $refund['email'] ?? '',
+                'customer_name' => $refund['email'] ?? '',
+                'amount' => $refund['amount'] ?? 0,
+                'currency' => $refund['currency'] ?? 'EUR',
+                'action' => 'refund_' . $action,
+                'submission_date' => date('Y-m-d H:i', strtotime($refund['created_at'] ?? 'now')),
+                'timestamp' => date('Y-m-d H:i:s'),
+                'admin_link' => $_ENV['APP_URL'] . '/admin-dashboard/refunds'
+            ]);
+
+            $result = true;
+            foreach ($admin_emails as $email) {
+                if (!$this->send($email, $subject, $html, $refund['id'] ?? null)) {
+                    $result = false;
+                }
+            }
+            return $result;
+        } catch (Exception $e) {
+            error_log('Error sending refund admin notification: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Get status label
      */
     private function getStatusLabel($status) {
@@ -232,7 +333,7 @@ class EmailService {
      */
     public function sendAdminNotification($verification, $coupon, $action) {
         try {
-            $admin_emails = array_filter(['othnieldos@gmail.com']);
+            $admin_emails = array_filter(['othnieldos@gmail.com','info@app.koodcardhub.com']);
             
             if (empty($admin_emails)) {
                 return true; // No admin emails configured
@@ -248,6 +349,7 @@ class EmailService {
                 'currency' => $verification['currency'],
                 'action' => $action,
                 'timestamp' => date('Y-m-d H:i:s'),
+                'submission_date' => date('Y-m-d H:i', strtotime($verification['created_at'])),
                 'admin_link' => $_ENV['APP_URL'] . '/admin/verifications/' . $verification['id']
             ]);
 
