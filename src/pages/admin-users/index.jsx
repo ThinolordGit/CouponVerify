@@ -249,11 +249,13 @@ const AdminUsersManagement = () => {
                       <td className="px-6 py-4 text-gray-600">{user.email}</td>
                       <td className="px-6 py-4">
                         <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                          user.status === 'active'
+                          user.role === 'admin'
                             ? 'bg-green-100 text-green-800'
+                            : user.role === 'manager'
+                            ? 'bg-yellow-100 text-yellow-800'
                             : 'bg-red-100 text-red-800'
                         }`}>
-                          {user.status === 'active' ? 'Active' : 'Blocked'}
+                          {user.role === 'admin' ? t('adminUsers.roleAdmin') : (user.role === 'manager' ? t('adminUsers.roleManager') : t('adminUsers.roleSuperAdmin'))}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-gray-600 text-sm">
@@ -347,6 +349,7 @@ const AdminUsersManagement = () => {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="admin">{t('adminUsers.roleAdmin')}</option>
+                  <option value="manager">{t('adminUsers.roleManager')}</option>
                   <option value="super_admin">{t('adminUsers.roleSuperAdmin')}</option>
                 </select>
               </div>

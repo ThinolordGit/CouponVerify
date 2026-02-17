@@ -661,6 +661,8 @@
     "featureCouponVerification": "Kupon doğrulamayı etkinleştir",
     "featureAdminPanel": "Yönetici panelini etkinleştir",
     "featureHomePage": "Genel ana sayfa erişimini etkinleştir",
+    "featureLaunchingPush": "Müşterilerin gönderimlerinden hemen sonra bildirim almalarını sağla",
+    "featureSubmitResume": "Müşterilerin devam eden gönderimi sürdürmelerine izin ver",
     "featurePublicCatalog": "Genel kupon kataloğunu göster",
     "featureSocialSharing": "Sosyal paylaşımı etkinleştir",
     "featureApiAccess": "Genel API erişimini etkinleştir",
@@ -720,6 +722,7 @@
     "formEmail": "E-posta *",
     "formRole": "Rol",
     "roleAdmin": "Admin",
+    "roleManager": "Yönetici",
     "roleSuperAdmin": "Süper Admin",
     "cancel": "İptal",
     "create": "Oluştur",
@@ -922,6 +925,13 @@
     "enableError": "Bildirimler etkinleştirilemedi",
     "dataSecure": "Verileriniz güvende.",
     "learnMore": "Daha Fazla Bilgi"
+  },
+
+  "submissionNotice": {
+    "title": "Gönderiminiz işleniyor",
+    "description": "Teşekkürler — gönderiminizi aldık. İşlem tamamlandığında sonucu e‑posta ile size göndereceğiz. Lütfen birkaç dakika bekleyin.",
+    "newSubmission": "Yeni gönderim başlat",
+    "backHome": "Ana sayfaya dön"
   },
 
   "notFound": {

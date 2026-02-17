@@ -661,6 +661,8 @@
     "featureCouponVerification": "Abilita verifica coupon",
     "featureAdminPanel": "Abilita pannello admin",
     "featureHomePage": "Abilita home page",
+    "featureLaunchingPush": "Consentire ai clienti di ricevere una notifica immediatamente dopo l'invio",
+    "featureSubmitResume": "Consentire ai clienti di riprendere una richiesta in corso",
     "featurePublicCatalog": "Mostra catalogo pubblico",
     "featureSocialSharing": "Abilita condivisione social",
     "featureApiAccess": "Abilita accesso API pubblica",
@@ -720,8 +722,9 @@
     "formEmail": "Email *",
     "formRole": "Ruolo",
     "roleAdmin": "Admin",
+    "roleManager": "Responsabile",
     "roleSuperAdmin": "Super Admin",
-    "cancel": "Anullla",
+    "cancel": "Annulla",
     "create": "Crea",
     "update": "Aggiorna",
     "confirmDelete": "Eliminare utente?",
@@ -922,6 +925,13 @@
     "enableError": "Attivazione fallita",
     "dataSecure": "I tuoi dati sono al sicuro.",
     "learnMore": "Scopri di più"
+  },
+  
+  "submissionNotice": {
+    "title": "La tua richiesta è in elaborazione",
+    "description": "Grazie — abbiamo ricevuto la tua richiesta. Ti invieremo il risultato via e‑mail non appena sarà elaborato. Attendere qualche minuto, per favore.",
+    "newSubmission": "Avvia una nuova richiesta",
+    "backHome": "Torna alla home"
   },
 
   "notFound": {

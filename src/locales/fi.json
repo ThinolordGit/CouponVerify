@@ -661,6 +661,8 @@
     "featureCouponVerification": "Ota käyttöön kuponkien vahvistus",
     "featureAdminPanel": "Ota käyttöön ylläpitopaneeli",
     "featureHomePage": "Ota käyttöön julkinen kotisivu",
+    "featureLaunchingPush": "Salli asiakkaiden saada ilmoitus heti lähetyksen jälkeen",
+    "featureSubmitResume": "Salli asiakkaiden jatkaa käynnissä olevaa lähetystä",
     "featurePublicCatalog": "Näytä julkinen kuponkiluettelo",
     "featureSocialSharing": "Ota käyttöön jakaminen sosiaaliseen mediaan",
     "featureApiAccess": "Ota käyttöön julkinen API",
@@ -720,6 +722,7 @@
     "formEmail": "Sähköposti *",
     "formRole": "Rooli",
     "roleAdmin": "Admin",
+    "roleManager": "Päällikkö",
     "roleSuperAdmin": "Super Admin",
     "cancel": "Peruuta",
     "create": "Luo",
@@ -922,6 +925,13 @@
     "enableError": "Ilmoitusten aktivointi epäonnistui",
     "dataSecure": "Tietosi ovat turvassa.",
     "learnMore": "Lue lisää"
+  },
+  
+  "submissionNotice": {
+    "title": "Lähetyksesi käsitellään",
+    "description": "Kiitos — olemme vastaanottaneet lähetyksesi. Lähetämme tuloksen sähköpostitse heti, kun se on käsitelty. Odota muutama minuutti.",
+    "newSubmission": "Aloita uusi lähetys",
+    "backHome": "Takaisin etusivulle"
   },
 
   "notFound": {

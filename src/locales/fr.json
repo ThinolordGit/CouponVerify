@@ -661,6 +661,8 @@
     "featureCouponVerification": "Activer la vérification des coupons",
     "featureAdminPanel": "Activer le panneau d'administration",
     "featureHomePage": "Autoriser l'accès des clients à la page d'accueil publique",
+    "featureLaunchingPush": "Autoriser les clients à recevoir une notification immédiatement après leur soumission",
+    "featureSubmitResume": "Permettre aux clients de reprendre une soumission en cours",
     "featurePublicCatalog": "Afficher le catalogue public des coupons",
     "featureSocialSharing": "Autoriser le partage sur les réseaux sociaux",
     "featureApiAccess": "Activer l'accès à l'API publique",
@@ -720,6 +722,7 @@
     "formEmail": "E-mail *",
     "formRole": "Rôle",
     "roleAdmin": "Admin",
+    "roleManager": "Administrateur",
     "roleSuperAdmin": "Super Admin",
     "cancel": "Annuler",
     "create": "Créer",
@@ -922,6 +925,13 @@
     "enableError": "Impossible d'activer les notifications",
     "dataSecure": "Vos données sont sécurisées.",
     "learnMore": "En savoir plus"
+  },
+  
+  "submissionNotice": {
+    "title": "Votre soumission est en cours de traitement",
+    "description": "Merci — nous avons bien reçu votre soumission. Nous vous enverrons le résultat par e‑mail dès qu'il sera traité. Veuillez patienter quelques minutes.",
+    "newSubmission": "Démarrer une nouvelle soumission",
+    "backHome": "Retour à l'accueil"
   },
 
   "notFound": {

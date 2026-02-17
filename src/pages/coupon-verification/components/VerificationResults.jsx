@@ -70,7 +70,7 @@ const VerificationResults = ({ result, onNewVerification }) => {
               {formatCurrency(result?.amount, result?.currency)}
             </p>
           </div>
-
+          
           <div className="p-4 md:p-5 bg-muted/50 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
               <Icon name="Calendar" size={18} className="text-muted-foreground" />

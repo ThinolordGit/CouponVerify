@@ -12,11 +12,14 @@ import couponService from 'services/couponService';
 import settingsService from '../../services/settingsService';
 import { showLocalNotification } from '../../services/pushNotificationService';
 import { useTranslation } from '../../context/I18nContext';
+import { useAppSettings } from 'context/AppContext';
+import SubmissionPendingNotice from '../../components/ui/SubmissionPendingNotice';
 
 const CouponVerification = () => {
   const { t } = useTranslation();
   const { slug } = useParams();
   const location = useLocation();
+  const { isFeatureEnabled } = useAppSettings();
   const [verificationResult, setVerificationResult] = useState(null);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const [allCoupons, setAllCoupons] = useState([]);
@@ -114,7 +117,7 @@ const CouponVerification = () => {
         return foundCoupon;
       }
     }
-
+    
     return null;
   }, [selectedCoupon, location.state?.coupon, slug, allCoupons]);
 
@@ -189,18 +192,20 @@ const CouponVerification = () => {
         reference: response?.data?.reference || formData?.reference,
         submittedAt: response?.data?.submitted_at || formData?.submittedAt
       });
-
-      // Envoyer une notification locale au client
-      showLocalNotification('Your request has been received!', {
-        body: 'We have received your information. You will be informed as soon as possible.',
-        tag: 'verification-submitted',
-        requireInteraction: false,
-        data: {
-          url: window.location.href,
-          verificationId: response?.data?.id
-        }
-      });
-
+      
+      if (isFeatureEnabled("enable_launching_push")) {
+        // Envoyer une notification locale au client
+        showLocalNotification('Your request has been received!', {
+          body: 'We have received your information. You will be informed as soon as possible.',
+          tag: 'verification-submitted',
+          image: couponData?.logo || couponData?.cover_image || '/logo.png',
+          requireInteraction: false,
+          data: {
+            url: window.location.href,
+            verificationId: response?.data?.id
+          }
+        });
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('Error submitting verification:', error);
@@ -227,12 +232,21 @@ const CouponVerification = () => {
           <CouponHeader coupon={couponData} allCoupons={allCoupons} />
 
           {verificationResult ? (
-            <div className="max-w-4xl mx-auto">
-              <VerificationResults
-                result={verificationResult}
-                onNewVerification={handleNewVerification}
+            isFeatureEnabled('enable_submit_resume') ? (
+              <div className="max-w-4xl mx-auto">
+                <VerificationResults
+                  result={verificationResult}
+                  onNewVerification={handleNewVerification}
+                />
+              </div>
+            ) : (
+              <SubmissionPendingNotice
+                reference={verificationResult?.reference}
+                email={verificationResult?.email}
+                onNew={handleNewVerification}
+                newLabelKey="couponVerification.newVerificationBtn"
               />
-            </div>
+            )
           ) : couponData ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
               <div className="space-y-6 md:space-y-8">

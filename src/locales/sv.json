@@ -661,6 +661,8 @@
     "featureCouponVerification": "Aktivera kupongverifiering",
     "featureAdminPanel": "Aktivera adminpanel",
     "featureHomePage": "Aktivera tillgång till offentlig startsida",
+    "featureLaunchingPush": "Tillåt kunder att få avisering direkt efter inskick",
+    "featureSubmitResume": "Tillåt kunder att återuppta pågående inlämning",
     "featurePublicCatalog": "Visa offentlig kupongkatalog",
     "featureSocialSharing": "Aktivera delning på sociala medier",
     "featureApiAccess": "Aktivera offentlig API-åtkomst",
@@ -720,6 +722,7 @@
     "formEmail": "E-post *",
     "formRole": "Roll",
     "roleAdmin": "Admin",
+    "roleManager": "Chef",
     "roleSuperAdmin": "Super Admin",
     "cancel": "Avbryt",
     "create": "Skapa",
@@ -922,6 +925,13 @@
     "enableError": "Kunde inte aktivera aviseringar",
     "dataSecure": "Dina data är säkra.",
     "learnMore": "Läs mer"
+  },
+
+  "submissionNotice": {
+    "title": "Din inskickning behandlas",
+    "description": "Tack — vi har mottagit din inskickning. Vi skickar resultatet till din e‑post så snart det är behandlat. Vänta några minuter, tack.",
+    "newSubmission": "Starta en ny inskickning",
+    "backHome": "Tillbaka till startsidan"
   },
 
   "notFound": {

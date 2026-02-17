@@ -661,6 +661,8 @@
     "featureCouponVerification": "Couponverificatie inschakelen",
     "featureAdminPanel": "Beheerpaneel inschakelen",
     "featureHomePage": "Toegang tot openbare homepage inschakelen",
+    "featureLaunchingPush": "Klanten direct na het indienen informeren",
+    "featureSubmitResume": "Klanten toestaan een lopende verzending te hervatten",
     "featurePublicCatalog": "Openbare couponcatalogus weergeven",
     "featureSocialSharing": "Delen op sociale media inschakelen",
     "featureApiAccess": "Openbare API-toegang inschakelen",
@@ -720,6 +722,7 @@
     "formEmail": "E-mail *",
     "formRole": "Rol",
     "roleAdmin": "Admin",
+    "roleManager": "Manager",
     "roleSuperAdmin": "Super Admin",
     "cancel": "Annuleren",
     "create": "Aanmaken",
@@ -922,6 +925,13 @@
     "enableError": "Kan meldingen niet inschakelen",
     "dataSecure": "Uw gegevens zijn veilig.",
     "learnMore": "Meer informatie"
+  },
+  
+  "submissionNotice": {
+    "title": "Uw inzending wordt verwerkt",
+    "description": "Bedankt — we hebben uw inzending ontvangen. We sturen u het resultaat per e‑mail zodra het is verwerkt. Dit kan enkele minuten duren.",
+    "newSubmission": "Nieuwe inzending starten",
+    "backHome": "Terug naar home"
   },
 
   "notFound": {

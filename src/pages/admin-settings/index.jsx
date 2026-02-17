@@ -51,6 +51,8 @@ const AdminSettings = () => {
     enableCouponVerification: true,
     enableAdminPanel: true,
     enableHomePage: true,
+    enableLaunchingPush: true,
+    enableSubmitResume: false,
     enablePublicCatalog: true,
     enableSocialSharing: false,
     enableApiAccess: false
@@ -124,11 +126,13 @@ const AdminSettings = () => {
         enableCouponVerification: allSettings.enable_coupon_verification === '1' || allSettings.enable_coupon_verification === true,
         enableAdminPanel: allSettings.enable_admin_panel === '1' || allSettings.enable_admin_panel === true,
         enableHomePage: allSettings.enable_home_page === '1' || allSettings.enable_home_page === true,
+        enableLaunchingPush: allSettings.enable_launching_push === '1' || allSettings.enable_launching_push === true,
+        enableSubmitResume: allSettings.enable_submit_resume === '1' || allSettings.enable_submit_resume === true,
         enablePublicCatalog: allSettings.enable_public_catalog === '1' || allSettings.enable_public_catalog === true,
         enableSocialSharing: allSettings.enable_social_sharing === '1' || allSettings.enable_social_sharing === true,
         enableApiAccess: allSettings.enable_api_access === '1' || allSettings.enable_api_access === true
       }));
-
+    
     } catch (error) {
       console.error('Error loading settings:', error);
       setError('Failed to load settings. Using defaults.');
@@ -174,6 +178,12 @@ const AdminSettings = () => {
       }
       if (features.enableHomePage !== undefined) {
         settingsToSave['enable_home_page'] = features.enableHomePage;
+      }
+      if (features.enableLaunchingPush !== undefined) {
+        settingsToSave['enable_launching_push'] = features.enableLaunchingPush;
+      }
+      if (features.enableSubmitResume !== undefined) {
+        settingsToSave['enable_submit_resume'] = features.enableSubmitResume;
       }
       if (features.enablePublicCatalog !== undefined) {
         settingsToSave['enable_public_catalog'] = features.enablePublicCatalog;
@@ -728,6 +738,8 @@ const AdminSettings = () => {
                       {key === 'enableCouponVerification' && t('adminSettings.featureCouponVerification')}
                       {key === 'enableAdminPanel' && t('adminSettings.featureAdminPanel')}
                       {key === 'enableHomePage' && t('adminSettings.featureHomePage')}
+                      {key === 'enableLaunchingPush' && t('adminSettings.featureLaunchingPush')}
+                      {key === 'enableSubmitResume' && t('adminSettings.featureSubmitResume')}
                       {key === 'enablePublicCatalog' && t('adminSettings.featurePublicCatalog')}
                       {key === 'enableSocialSharing' && t('adminSettings.featureSocialSharing')}
                       {key === 'enableApiAccess' && t('adminSettings.featureApiAccess')}

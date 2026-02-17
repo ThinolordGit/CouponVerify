@@ -661,6 +661,8 @@
     "featureCouponVerification": "Função de Verificação",
     "featureAdminPanel": "Painel Administrativo",
     "featureHomePage": "Página Inicial Pública",
+    "featureLaunchingPush": "Permitir que os clientes recebam uma notificação imediatamente após o envio",
+    "featureSubmitResume": "Permitir que os clientes retomem uma submissão em andamento",
     "featurePublicCatalog": "Catálogo Público",
     "featureSocialSharing": "Compartilhamento Social",
     "featureApiAccess": "Acesso via API",
@@ -720,6 +722,7 @@
     "formEmail": "E-mail *",
     "formRole": "Cargo",
     "roleAdmin": "Administrador",
+    "roleManager": "Gerente",
     "roleSuperAdmin": "Super Administrador",
     "cancel": "Cancelar",
     "create": "Criar",
@@ -922,6 +925,13 @@
     "enableError": "Erro: Não foi possível ativar as notificações",
     "dataSecure": "Sua privacidade e dados estão seguros.",
     "learnMore": "Saber mais"
+  },
+
+  "submissionNotice": {
+    "title": "Sua submissão está sendo processada",
+    "description": "Obrigado — recebemos sua submissão. Enviaremos o resultado por e‑mail assim que for processado. Aguarde alguns minutos, por favor.",
+    "newSubmission": "Iniciar nova submissão",
+    "backHome": "Voltar à página inicial"
   },
 
   "notFound": {

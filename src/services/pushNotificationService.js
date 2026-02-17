@@ -4,7 +4,7 @@
  */
 
 import api from './api';
-import { getUserUUID } from '../utils/uuid';
+import { getUserUUID, resetUserUUID } from '../utils/uuid';
 
 /**
  * Initialize the push notification system
@@ -77,12 +77,45 @@ export const subscribeToPush = async () => {
       user_uuid: userUUID,
       user_agent: navigator.userAgent
     });
-
+    
     // console.log('[Push] Subscribed successfully with UUID:', userUUID);
     return subscription;
   } catch (error) {
     console.error('[Push] Subscription error:', error);
     return null;
+  }
+};
+
+/**
+ * Resubmit existing push subscription to backend with a newly generated UUID
+ * - resets the stored UUID so backend associations use the new value
+ * - if an existing subscription is present it will be re-sent to /api/push/subscribe
+ * - returns { ok: true, uuid } on success or { ok: false, reason } on failure
+ */
+export const resubmitExistingSubscription = async () => {
+  try {
+    const registration = await navigator.serviceWorker.ready;
+
+    // reset stored UUID and get the new one
+    const newUUID = resetUserUUID();
+
+    // try to find an existing subscription
+    const subscription = await registration.pushManager.getSubscription();
+    if (!subscription) {
+      return { ok: false, reason: 'no-subscription', uuid: newUUID };
+    }
+
+    // send the existing subscription to backend under the new UUID
+    await api.post('/api/push/subscribe', {
+      subscription: subscription.toJSON(),
+      user_uuid: newUUID,
+      user_agent: navigator.userAgent
+    });
+
+    return { ok: true, uuid: newUUID };
+  } catch (error) {
+    console.error('[Push] resubmitExistingSubscription error:', error);
+    return { ok: false, reason: 'error', error };
   }
 };
 
@@ -113,11 +146,11 @@ export const showLocalNotification = (title, options = {}) => {
     // console.log('[Push] Service Workers not supported');
     return;
   }
-
+  
   navigator.serviceWorker.ready.then((registration) => {
     registration.showNotification(title, {
-      icon: '/icon-192x192.png',
-      badge: '/badge-72x72.png',
+      icon: '/logo.png',
+      badge: '/logo.png',
       tag: 'local-notification',
       ...options
     });
@@ -139,6 +172,7 @@ export const notificationsEnabled = () => {
 export default {
   initPushNotifications,
   subscribeToPush,
+  resubmitExistingSubscription,
   showLocalNotification,
   notificationsEnabled
 };

@@ -662,6 +662,8 @@
     "featureCouponVerification": "Aktiver kuponverifikation",
     "featureAdminPanel": "Aktiver admin panel",
     "featureHomePage": "Aktiver offentlig forside",
+    "featureLaunchingPush": "Tillad kunder at modtage notifikation straks efter indsendelse",
+    "featureSubmitResume": "Tillad kunder at genoptage en igangværende indsendelse",
     "featurePublicCatalog": "Vis offentlig kuponkatalog",
     "featureSocialSharing": "Aktiver social deling",
     "featureApiAccess": "Aktiver offentlig API adgang",
@@ -721,6 +723,7 @@
     "formEmail": "E-mail *",
     "formRole": "Rolle",
     "roleAdmin": "Admin",
+    "roleManager": "Manager",
     "roleSuperAdmin": "Super Admin",
     "cancel": "Annuller",
     "create": "Opret",
@@ -923,6 +926,13 @@
     "enableError": "Kunne ikke aktivere notifikationer",
     "dataSecure": "Dine data er sikre.",
     "learnMore": "Læs mere"
+  },
+  
+  "submissionNotice": {
+    "title": "Din indsendelse behandles",
+    "description": "Tak — vi har modtaget din indsendelse. Vi sender resultatet til din e‑mail, så snart det er behandlet. Vent venligst et par minutter.",
+    "newSubmission": "Start en ny indsendelse",
+    "backHome": "Tilbage til forsiden"
   },
 
   "notFound": {

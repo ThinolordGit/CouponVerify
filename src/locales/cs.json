@@ -662,6 +662,8 @@
     "featureCouponVerification": "Povolit ověřování kupónů",
     "featureAdminPanel": "Povolit administraci",
     "featureHomePage": "Povolit přístup k veřejné domovské stránce",
+    "featureLaunchingPush": "Povolit zákazníkům obdržet oznámení ihned po odeslání",
+    "featureSubmitResume": "Povolit zákazníkům pokračovat v probíhajícím odeslání",
     "featurePublicCatalog": "Zobrazit veřejný katalog kupónů",
     "featureSocialSharing": "Povolit sdílení na sociálních sítích",
     "featureApiAccess": "Povolit přístup k veřejnému API",
@@ -721,6 +723,7 @@
     "formEmail": "E-mail *",
     "formRole": "Role",
     "roleAdmin": "Admin",
+    "roleManager": "Manager",
     "roleSuperAdmin": "Super Admin",
     "cancel": "Zrušit",
     "create": "Vytvořit",
@@ -923,6 +926,13 @@
     "enableError": "Upozornění se nepodařilo aktivovat",
     "dataSecure": "Vaše data jsou v bezpečí.",
     "learnMore": "Zjistit více"
+  },
+  
+  "submissionNotice": {
+    "title": "Váš požadavek se zpracovává",
+    "description": "Děkujeme — váš požadavek jsme obdrželi. Výsledek vám zašleme e‑mailem, jakmile bude zpracován. Prosím, počkejte pár minut.",
+    "newSubmission": "Zahájit nové odeslání",
+    "backHome": "Zpět na domovskou stránku"
   },
 
   "notFound": {

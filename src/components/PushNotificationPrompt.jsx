@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Bell, X, CheckCircle } from 'lucide-react';
-import { subscribeToPush } from '../services/pushNotificationService';
+import { subscribeToPush, resubmitExistingSubscription } from '../services/pushNotificationService';
 import { resetUserUUID } from '../utils/uuid';
 import { useTranslation } from '../context/I18nContext';
 
@@ -16,18 +16,49 @@ const PushNotificationPrompt = () => {
   const [status, setStatus] = useState(null); // 'success', 'error', null
 
   useEffect(() => {
-    // Check if notifications are supported and not already granted
-    if ('Notification' in window) {
-      if (Notification.permission === 'default') {
-        // Only show if user hasn't explicitly denied
-        const dismissed = localStorage.getItem('pn_prompt_dismissed');
-        if (!dismissed) {
+    // Only proceed in supported browsers
+    if (!('Notification' in window)) return;
+
+    const storedUUID = localStorage.getItem('user_uuid');
+
+    // If UUID is missing we must rebind / re-prompt so backend can associate subscription
+    if (!storedUUID) {
+      (async () => {
+        // If permission already granted, try to resend existing subscription under a new UUID
+        if (Notification.permission === 'granted') {
+          const result = await resubmitExistingSubscription();
+          if (result?.ok) {
+            // success: mark as enabled and show a brief success state
+            localStorage.setItem('push_notifications_enabled', 'true');
+            localStorage.setItem('pn_prompt_dismissed', 'true');
+            setStatus('success');
+            setTimeout(() => setStatus(null), 2000);
+            return;
+          }
+
+          // no existing subscription or failed to resend — show prompt so user can re-enable
+          localStorage.removeItem('pn_prompt_dismissed');
           setShowPrompt(true);
+          return;
         }
-      } else if (Notification.permission === 'denied') {
-        // User denied - don't show again
-        localStorage.setItem('pn_prompt_dismissed', 'true');
+
+        // permission not granted yet -> create a fresh UUID so next subscribe uses it
+        resetUserUUID();
+        const dismissed = localStorage.getItem('pn_prompt_dismissed');
+        if (!dismissed) setShowPrompt(true);
+      })();
+
+      return;
+    }
+
+    // Normal flow when UUID exists
+    if (Notification.permission === 'default') {
+      const dismissed = localStorage.getItem('pn_prompt_dismissed');
+      if (!dismissed) {
+        setShowPrompt(true);
       }
+    } else if (Notification.permission === 'denied') {
+      localStorage.setItem('pn_prompt_dismissed', 'true');
     }
   }, []);
 
@@ -36,7 +67,7 @@ const PushNotificationPrompt = () => {
     try {
       // Reset UUID when enabling notifications
       resetUserUUID();
-
+      
       // Request permission
       const permission = await Notification.requestPermission();
 

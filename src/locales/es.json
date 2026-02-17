@@ -661,6 +661,8 @@
     "featureCouponVerification": "Habilitar verificación de cupones",
     "featureAdminPanel": "Habilitar panel de administración",
     "featureHomePage": "Permitir acceso a la página de inicio",
+    "featureLaunchingPush": "Permitir que los clientes reciban una notificación inmediatamente después de su envío",
+    "featureSubmitResume": "Permitir que los clientes reanuden una solicitud en curso",
     "featurePublicCatalog": "Mostrar catálogo público",
     "featureSocialSharing": "Permitir compartir en redes sociales",
     "featureApiAccess": "Habilitar acceso a la API pública",
@@ -720,6 +722,7 @@
     "formEmail": "Correo *",
     "formRole": "Rol",
     "roleAdmin": "Admin",
+    "roleManager": "Gerente",
     "roleSuperAdmin": "Super Admin",
     "cancel": "Cancelar",
     "create": "Crear",
@@ -922,6 +925,13 @@
     "enableError": "No se pudieron activar",
     "dataSecure": "Tus datos están seguros.",
     "learnMore": "Saber más"
+  },
+  
+  "submissionNotice": {
+    "title": "Su envío está en proceso",
+    "description": "Gracias — hemos recibido su envío. Le enviaremos el resultado por correo electrónico tan pronto como se procese. Por favor, espere unos minutos.",
+    "newSubmission": "Iniciar nuevo envío",
+    "backHome": "Volver al inicio"
   },
 
   "notFound": {

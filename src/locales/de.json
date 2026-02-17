@@ -661,6 +661,8 @@
     "featureCouponVerification": "Gutscheinverifizierung aktivieren",
     "featureAdminPanel": "Admin-Bereich aktivieren",
     "featureHomePage": "Zugriff auf Startseite erlauben",
+    "featureLaunchingPush": "Kunden sofort nach Absenden benachrichtigen",
+    "featureSubmitResume": "Kunden erlauben, eine laufende Übermittlung fortzusetzen",
     "featurePublicCatalog": "Öffentlichen Katalog anzeigen",
     "featureSocialSharing": "Teilen in sozialen Medien erlauben",
     "featureApiAccess": "Zugriff auf öffentliche API erlauben",
@@ -720,6 +722,7 @@
     "formEmail": "E-Mail *",
     "formRole": "Rolle",
     "roleAdmin": "Admin",
+    "roleManager": "Manager",
     "roleSuperAdmin": "Super-Admin",
     "cancel": "Abbrechen",
     "create": "Erstellen",
@@ -922,6 +925,13 @@
     "enableError": "Aktivierung fehlgeschlagen",
     "dataSecure": "Ihre Daten sind sicher.",
     "learnMore": "Mehr erfahren"
+  },
+
+  "submissionNotice": {
+    "title": "Ihre Einreichung wird bearbeitet",
+    "description": "Vielen Dank — wir haben Ihre Einreichung erhalten. Wir senden Ihnen das Ergebnis per E‑Mail, sobald es bearbeitet wurde. Bitte haben Sie ein paar Minuten Geduld.",
+    "newSubmission": "Neue Einreichung starten",
+    "backHome": "Zur Startseite"
   },
 
   "notFound": {

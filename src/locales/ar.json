@@ -662,6 +662,8 @@
     "featureCouponVerification": "خاصية التحقق من الكوبونات",
     "featureAdminPanel": "لوحة الإدارة",
     "featureHomePage": "الصفحة الرئيسية العامة",
+    "featureLaunchingPush": "السماح للعملاء بتلقي إشعار فورًا بعد الإرسال",
+    "featureSubmitResume": "السماح للعملاء باستئناف إرسال قيد المعالجة",
     "featurePublicCatalog": "الكاتالوج العام",
     "featureSocialSharing": "المشاركة عبر التواصل الاجتماعي",
     "featureApiAccess": "الوصول عبر API",
@@ -721,6 +723,7 @@
     "formEmail": "البريد الإلكتروني *",
     "formRole": "الرتبة",
     "roleAdmin": "مسؤول",
+    "roleManager": "مدير",
     "roleSuperAdmin": "مدير عام",
     "cancel": "إلغاء",
     "create": "إنشاء",
@@ -923,6 +926,13 @@
     "enableError": "حدث خطأ: لا يمكن تفعيل الإشعارات",
     "dataSecure": "بياناتك وخصوصيتك محمية.",
     "learnMore": "اعرف المزيد"
+  },
+  
+  "submissionNotice": {
+    "title": "يتم معالجة إرسالك",
+    "description": "شكرًا — لقد استلمنا إرسالَك. سنرسل لك النتيجة عبر البريد الإلكتروني بمجرد الانتهاء من معالجتها. يرجى الانتظار بضع دقائق.",
+    "newSubmission": "ابدأ إرسالًا جديدًا",
+    "backHome": "العودة إلى الصفحة الرئيسية"
   },
 
   "notFound": {

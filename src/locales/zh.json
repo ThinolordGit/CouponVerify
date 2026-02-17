@@ -661,6 +661,8 @@
     "featureCouponVerification": "启用优惠券验证功能",
     "featureAdminPanel": "管理后台访问",
     "featureHomePage": "启用公开首页",
+    "featureLaunchingPush": "允许客户在提交后立即收到通知",
+    "featureSubmitResume": "允许客户恢复进行中的提交",
     "featurePublicCatalog": "展示公开优惠券目录",
     "featureSocialSharing": "社交媒体分享",
     "featureApiAccess": "公开 API 访问接口",
@@ -720,6 +722,7 @@
     "formEmail": "邮件地址 *",
     "formRole": "角色",
     "roleAdmin": "普通管理员",
+    "roleManager": "经理",
     "roleSuperAdmin": "超级管理员",
     "cancel": "取消",
     "create": "创建",
@@ -922,6 +925,13 @@
     "enableError": "发生错误：无法开启通知权限",
     "dataSecure": "数据隐私受到严格保护。",
     "learnMore": "了解技术细节"
+  },
+
+  "submissionNotice": {
+    "title": "您的提交正在处理中",
+    "description": "感谢 — 我们已收到您的提交。处理完成后我们会通过电子邮件将结果发送给您。请稍等几分钟。",
+    "newSubmission": "开始新的提交",
+    "backHome": "返回首页"
   },
 
   "notFound": {

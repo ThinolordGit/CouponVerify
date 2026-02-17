@@ -661,6 +661,8 @@
     "featureCouponVerification": "Włącz weryfikację kuponów",
     "featureAdminPanel": "Włącz panel administratora",
     "featureHomePage": "Zezwalaj na dostęp do strony głównej",
+    "featureLaunchingPush": "Pozwól klientom otrzymać powiadomienie bezpośrednio po wysłaniu",
+    "featureSubmitResume": "Pozwól klientom wznowić trwające zgłoszenie",
     "featurePublicCatalog": "Pokaż publiczny katalog",
     "featureSocialSharing": "Zezwalaj na udostępnianie w mediach społecznościowych",
     "featureApiAccess": "Włącz dostęp do publicznego API",
@@ -720,6 +722,7 @@
     "formEmail": "E-mail *",
     "formRole": "Rola",
     "roleAdmin": "Admin",
+    "roleManager": "Menedżer",
     "roleSuperAdmin": "Super Admin",
     "cancel": "Anuluj",
     "create": "Utwórz",
@@ -922,6 +925,13 @@
     "enableError": "Aktywacja nieudana",
     "dataSecure": "Twoje dane są bezpieczne.",
     "learnMore": "Dowiedz się więcej"
+  },
+
+  "submissionNotice": {
+    "title": "Twoje zgłoszenie jest przetwarzane",
+    "description": "Dziękujemy — otrzymaliśmy Twoje zgłoszenie. Wyślemy wynik na Twój e‑mail, gdy tylko zostanie przetworzony. Prosimy o kilka minut cierpliwości.",
+    "newSubmission": "Rozpocznij nowe zgłoszenie",
+    "backHome": "Powrót do strony głównej"
   },
 
   "notFound": {

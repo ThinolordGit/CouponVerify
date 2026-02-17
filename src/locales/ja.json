@@ -661,6 +661,8 @@
     "featureCouponVerification": "確認機能を有効にする",
     "featureAdminPanel": "管理画面を有効にする",
     "featureHomePage": "公開トップページを表示する",
+    "featureLaunchingPush": "送信直後に顧客が通知を受け取れるようにする",
+    "featureSubmitResume": "進行中の送信を顧客が再開できるようにする",
     "featurePublicCatalog": "公開カタログを表示する",
     "featureSocialSharing": "SNS共有機能を有効にする",
     "featureApiAccess": "公開APIアクセスを有効にする",
@@ -720,6 +722,7 @@
     "formEmail": "メールアドレス *",
     "formRole": "役割",
     "roleAdmin": "管理者",
+    "roleManager": "マネージャー",
     "roleSuperAdmin": "最高管理者",
     "cancel": "キャンセル",
     "create": "作成",
@@ -922,6 +925,13 @@
     "enableError": "エラーが発生しました: 通知を有効にできません",
     "dataSecure": "プライバシーは保護されています。",
     "learnMore": "さらに詳しく"
+  },
+
+  "submissionNotice": {
+    "title": "送信は処理中です",
+    "description": "ありがとうございます — 送信内容を受け取りました。処理が完了次第、結果をメールでお送りします。数分お待ちください。",
+    "newSubmission": "新しい送信を開始",
+    "backHome": "ホームに戻る"
   },
 
   "notFound": {

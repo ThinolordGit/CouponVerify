@@ -65,7 +65,7 @@ const AdminSidebar = ({ isCollapsed = false, onCollapsing=() => {  } }) => {
       title: t('navigation.couponManagement'),
       items: [
         { label: t('navigation.allCoupons'), path: isSuperAdmin ? '/admin-dashboard/coupons' : '/admin-dashboard#coupons', icon: 'Ticket', badge: formatCount(coupons?.length) },
-        { ignore: !isSuperAdmin, label: t('navigation.addCoupon'), path: '/admin-dashboard/coupons/add', icon: 'Plus' },
+        { label: isSuperAdmin ? t('navigation.addCoupon') : t('navigation.couponManagement'), path: '/admin-dashboard/coupons/add', icon: isSuperAdmin ? 'Plus' : 'Command' },
         { ignore: !isSuperAdmin, label: t('navigation.categories'), path: '/admin-dashboard/coupons/categories', icon: 'FolderTree' },
       ],
     },

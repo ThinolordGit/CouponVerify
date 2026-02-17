@@ -661,6 +661,8 @@
     "featureCouponVerification": "Kupon ellenőrzés engedélyezése",
     "featureAdminPanel": "Adminisztrációs panel engedélyezése",
     "featureHomePage": "Nyilvános kezdőlap elérésének engedélyezése",
+    "featureLaunchingPush": "Engedélyezze, hogy az ügyfelek azonnal értesítést kapjanak beküldés után",
+    "featureSubmitResume": "Engedélyezze, hogy az ügyfelek folytassák a folyamatban lévő beküldést",
     "featurePublicCatalog": "Nyilvános kuponkatalógus megjelenítése",
     "featureSocialSharing": "Közösségi média megosztás engedélyezése",
     "featureApiAccess": "Nyilvános API hozzáférés engedélyezése",
@@ -720,6 +722,7 @@
     "formEmail": "E-mail *",
     "formRole": "Szerepkör",
     "roleAdmin": "Admin",
+    "roleManager": "Vezető",
     "roleSuperAdmin": "Super Admin",
     "cancel": "Mégse",
     "create": "Létrehozás",
@@ -922,6 +925,13 @@
     "enableError": "Nem sikerült engedélyezni az értesítéseket",
     "dataSecure": "Adatai biztonságban vannak.",
     "learnMore": "Tudjon meg többet"
+  },
+
+  "submissionNotice": {
+    "title": "A beküldésed feldolgozás alatt áll",
+    "description": "Köszönjük — megkaptuk beküldésedet. A feldolgozás után e‑mailben küldjük az eredményt. Kérjük, várj néhány percet.",
+    "newSubmission": "Új beküldés indítása",
+    "backHome": "Vissza a kezdőlapra"
   },
 
   "notFound": {

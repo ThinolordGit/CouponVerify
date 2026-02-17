@@ -63,7 +63,7 @@ const PrivateRoute = ({ children }) => {
       </div>
     );
   }
-
+  
   // Not authenticated - redirect to login
   if (!isAuthenticated) {
     return <Navigate to="/admin-login" replace />;

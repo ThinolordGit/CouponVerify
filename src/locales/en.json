@@ -662,6 +662,8 @@
     "featureCouponVerification": "Enable coupon verification",
     "featureAdminPanel": "Enable administration panel",
     "featureHomePage": "Allow customers to access public homepage",
+    "featureLaunchingPush": "Allow customers to immediately get notified just after their submission",
+    "featureSubmitResume": "Allow customers to resume an in-progress submission",
     "featurePublicCatalog": "Display public coupon catalog",
     "featureSocialSharing": "Allow sharing on social media",
     "featureApiAccess": "Enable public API access",
@@ -721,6 +723,7 @@
     "formEmail": "Email *",
     "formRole": "Role",
     "roleAdmin": "Admin",
+    "roleManager": "Manager",
     "roleSuperAdmin": "Super Admin",
     "cancel": "Cancel",
     "create": "Create",
@@ -923,6 +926,13 @@
     "enableError": "Unable to enable notifications",
     "dataSecure": "Your data is secure.",
     "learnMore": "Learn more"
+  },
+  
+  "submissionNotice": {
+    "title": "Your submission is being processed",
+    "description": "Thank you — we received your submission. We will email you the result as soon as it is processed. Please allow a few minutes for our team to review.",
+    "newSubmission": "Start a new submission",
+    "backHome": "Back to home"
   },
 
   "notFound": {

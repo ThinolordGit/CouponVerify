@@ -44,11 +44,19 @@ export const AdminProvider = ({ children }) => {
       setIsLoading(false);
     }
   }, []);
-
+  
   const isSuperAdmin = useCallback(() => {
     return admin && admin.role === 'super_admin';
   }, [admin]);
+  
+  const isAdmin= useCallback(() => {
+    return admin && admin.role === 'admin';
+  }, [admin]);
 
+  const isManager = useCallback(() => {
+    return admin && admin.role === 'manager';
+  }, [admin]);
+  
   const hasRole = useCallback((role) => {
     if (!admin) return false;
     if (Array.isArray(role)) {
@@ -68,6 +76,8 @@ export const AdminProvider = ({ children }) => {
     error,
     isAuthenticated,
     isSuperAdmin: isSuperAdmin(),
+    isAdmin: isAdmin(),
+    isManager: isManager(),
     hasRole,
     refresh: loadAdminUser,
     logout,

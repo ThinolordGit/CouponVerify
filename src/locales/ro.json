@@ -661,6 +661,8 @@
     "featureCouponVerification": "Activează verificarea cupoanelor",
     "featureAdminPanel": "Activează panoul de admin",
     "featureHomePage": "Activează accesul la pagina de start publică",
+    "featureLaunchingPush": "Permite clienților să primească o notificare imediat după trimitere",
+    "featureSubmitResume": "Permiteți clienților să reia o trimitere în curs",
     "featurePublicCatalog": "Afișează catalogul public de cupoane",
     "featureSocialSharing": "Activează partajarea pe rețelele sociale",
     "featureApiAccess": "Activează accesul API public",
@@ -720,6 +722,7 @@
     "formEmail": "E-mail *",
     "formRole": "Rol",
     "roleAdmin": "Admin",
+    "roleManager": "Manager",
     "roleSuperAdmin": "Super Admin",
     "cancel": "Anulare",
     "create": "Creează",
@@ -922,6 +925,13 @@
     "enableError": "Nu s-au putut activa notificările",
     "dataSecure": "Datele tale sunt securizate.",
     "learnMore": "Află Mai Multe"
+  },
+
+  "submissionNotice": {
+    "title": "Trimiterea dvs. este în curs de procesare",
+    "description": "Mulțumim — am primit trimiterea dvs. Vă vom trimite rezultatul prin e‑mail imediat ce este procesat. Vă rugăm să așteptați câteva minute.",
+    "newSubmission": "Începeți o trimitere nouă",
+    "backHome": "Înapoi la pagina principală"
   },
 
   "notFound": {

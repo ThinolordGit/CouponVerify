@@ -12,7 +12,7 @@ import Icon from 'components/AppIcon';
 const SuperAdminRoute = ({ children }) => {
   const { t } = useTranslation();
   const { isLoading, isAuthenticated, isSuperAdmin, admin } = useAdmin();
-
+  
   // Show loading state
   if (isLoading) {
     return (

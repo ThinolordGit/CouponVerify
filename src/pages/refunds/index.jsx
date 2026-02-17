@@ -8,6 +8,8 @@ import couponService from '../../services/couponService';
 import refundService from '../../services/refundService';
 import { showLocalNotification } from '../../services/pushNotificationService';
 import { useTranslation } from '../../context/I18nContext';
+import { useAppSettings } from 'context/AppContext';
+import SubmissionPendingNotice from '../../components/ui/SubmissionPendingNotice';
 
 const RefundsPage = () => {
   const { t } = useTranslation();
@@ -15,6 +17,7 @@ const RefundsPage = () => {
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refundResult, setRefundResult] = useState(null);
+  const { isFeatureEnabled } = useAppSettings();
 
   useEffect(() => {
     const loadCoupons = async () => {
@@ -63,13 +66,16 @@ const RefundsPage = () => {
         reference: response?.data?.reference || payload.reference,
         submittedAt: response?.data?.submitted_at || new Date().toISOString()
       });
-
-      showLocalNotification('Refund request received', {
-        body: t('refunds.pendingMessage'),
-        tag: 'refund-submitted',
-        data: { reference: response?.data?.reference }
-      });
-
+      
+      if (isFeatureEnabled("enable_launching_push")) {
+        showLocalNotification('Refund request received', {
+          body: t('refunds.pendingMessage'),
+          tag: 'refund-submitted',
+          image: couponData?.logo || couponData?.cover_image || '/logo.png',
+          data: { reference: response?.data?.reference }
+        });
+      }
+      
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error('Error submitting refund:', err);
@@ -90,9 +96,18 @@ const RefundsPage = () => {
           <CouponHeader coupon={couponData} allCoupons={allCoupons} />
 
           {refundResult ? (
-            <div className="max-w-4xl mx-auto">
-              <RefundResults result={refundResult} onNewRequest={handleNewRequest} />
-            </div>
+            isFeatureEnabled('enable_submit_resume') ? (
+              <div className="max-w-4xl mx-auto">
+                <RefundResults result={refundResult} onNewRequest={handleNewRequest} />
+              </div>
+            ) : (
+              <SubmissionPendingNotice
+                reference={refundResult?.reference}
+                email={refundResult?.email}
+                onNew={handleNewRequest}
+                newLabelKey="refunds.newRequest"
+              />
+            )
           ) : couponData ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
               <div className="space-y-6 md:space-y-8">

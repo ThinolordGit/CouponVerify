@@ -661,6 +661,8 @@
     "featureCouponVerification": "Проверка купонов",
     "featureAdminPanel": "Админ-панель",
     "featureHomePage": "Публичная главная страница",
+    "featureLaunchingPush": "Разрешить клиентам получать уведомление сразу после отправки",
+    "featureSubmitResume": "Разрешить клиентам возобновить незавершённую отправку",
     "featurePublicCatalog": "Публичный каталог",
     "featureSocialSharing": "Соц. шаринг",
     "featureApiAccess": "Доступ к API",
@@ -720,6 +722,7 @@
     "formEmail": "Email *",
     "formRole": "Роль",
     "roleAdmin": "Администратор",
+    "roleManager": "Менеджер",
     "roleSuperAdmin": "Супер-администратор",
     "cancel": "Отмена",
     "create": "Создать",
@@ -922,6 +925,13 @@
     "enableError": "Ошибка: уведомления не включены",
     "dataSecure": "Ваши данные и приватность защищены.",
     "learnMore": "Узнать больше"
+  },
+
+  "submissionNotice": {
+    "title": "Ваша заявка обрабатывается",
+    "description": "Спасибо — мы получили вашу заявку. Мы отправим результат на вашу электронную почту, как только он будет обработан. Пожалуйста, подождите несколько минут.",
+    "newSubmission": "Начать новую отправку",
+    "backHome": "Вернуться на главную"
   },
 
   "notFound": {
