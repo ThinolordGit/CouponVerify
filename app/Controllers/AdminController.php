@@ -263,7 +263,8 @@ class AdminController extends BaseController {
                     $this->sendAsync('statusUpdate', [
                         'verification' => $verification,
                         'coupon' => $coupon,
-                        'newStatus' => 'invalid'
+                        'newStatus' => 'invalid',
+                        'blocking_reason' => $reason
                     ]);
                 } catch (\Exception $e) {
                     error_log("Background task failed (reject): " . $e->getMessage());

@@ -249,17 +249,17 @@ class EmailService {
                 case 'pending':
                     $variables['submission_date'] = date('Y-m-d H:i', strtotime($refund['submitted_at'] ?? $refund['created_at'] ?? 'now'));
                     break;
-
+                
                 case 'approved':
                     $variables['approval_date'] = date('Y-m-d H:i', strtotime($refund['processed_at'] ?? $refund['updated_at'] ?? 'now'));
                     break;
                 
                 case 'rejected':
-                    $variables['rejection_reason'] = $refund['admin_notes'] ?? 'Request does not meet our criteria';
+                    $variables['rejection_reason'] = $notes ?? $refund['admin_notes'] ?? 'Request does not meet our criteria';
                     break;
 
                 case 'blocked':
-                    $variables['block_reason'] = $refund['admin_notes'] ?? 'Request flagged for additional review';
+                    $variables['block_reason'] = $notes ?? $refund['admin_notes'] ?? 'Request flagged for additional review';
                     $variables['block_date'] = date('Y-m-d H:i', strtotime($refund['blocked_at'] ?? $refund['updated_at'] ?? 'now'));
                     break;
             }
